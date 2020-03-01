@@ -3,6 +3,7 @@ Scan Your Network for Online Hosts with VISION
 
 ## About
 Vision will scan your network and list out all the online devices.  
+The front end GUI of Vision is built with 'Electron'. The main backend process part is built completely in Python. 
 
 ## Requirements
 1. Python 3.*
@@ -17,6 +18,6 @@ Follow following steps to run Vision.
 ## Current Stage
 Vision project was started around June 2019 and is currently still in development phase. The executable will be compiled when all the proposed features will be implemented.   
 
-### Author
+## Author
 Satshree Shrestha  
 Nepal
