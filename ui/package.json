@@ -1,0 +1,19 @@
+{
+  "name": "vision",
+  "version": "1.0.0",
+  "description": "network scanner",
+  "main": "magic.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Satshree Shrestha",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^8.0.0",
+    "path": "^0.12.7",
+    "python-shell": "^1.0.8",
+    "sweetalert": "^2.1.2"
+  }
+}

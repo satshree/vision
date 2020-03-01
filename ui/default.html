@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vision</title>
+    <link rel="stylesheet" href="./style.css">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <!-- <link type="text/css" rel="stylesheet" href="materialize/css/materialize.css"  media="screen,projection"/> -->
+    <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.min.css"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
+</head>
+<body>
+    <div class="container">
+        <div class="title center">
+          <h1>Vision</h1>
+          <strong> Seek and You Shall Receive </strong>
+        </div>
+        <hr>
+        <button type="button" id="back" class="btn waves-effect waves-light" onclick="confirmBack()"><i class="fas fa-arrow-left"></i> Back </button>
+        <div class="contents center">
+            <div id="progressBox">
+                <div class="progress">
+                    <div id="progressBar" class="indeterminate"></div>
+                </div>
+                <h5> Please wait while Vision scans the network </h5>
+            </div>
+
+            <div id="result" style="display:none;">
+                <div v-if="hostExists">
+                    <table class="responsive-table">
+                        <thead>
+                            <th>IP Address</th>
+                            <th>MAC Address</th>
+                            <th>Manufacturer</th>
+                            <th>Hostname</th>
+                            <th>Open Ports</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(meta, ip) in result">
+                                <td>{{ ip }}</td>
+                                <td>{{ meta.MAC }}</td>
+                                <td>{{ meta.Vendor }}</td>
+                                <td>{{ meta.Hostname }}</td>
+                                <td>
+                                    <div v-for="ports in meta.Ports">
+                                        {{ ports }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-else>
+                    <strong> <i class="fas fa-map-signs"></i> No Devices Found ... </strong>
+                </div>
+                <br>
+                <div class="center">
+                    <button type="button" class="btn waves-effect waves-light" onclick="initializeScan()"> <i class="fas fa-redo" style="margin-right:5px;"></i> Scan Network Again </button>
+                </div>
+            </div>
+            <br> <br>
+            <div id="progressBackground"></div>
+        </div>
+      </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <!-- <script type="text/javascript" src="materialize/js/materialize.js"></script> -->
+    <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./engine.js"></script>
+    <script>
+        initializeScan(['default'])
+        var scanning = true
+        let swal = require("sweetalert")
+
+        function confirmBack() {
+            if (scanning) {
+                var alertMessage = "Are You Sure You Want To Abort The Scan?"
+            } else {
+                var alertMessage = "Are You Sure You Want To Discard The Results?"
+            }
+
+            swal({
+                text:alertMessage,
+                icon:"warning",
+                buttons:{
+                    cancel:{
+                        text:"No",
+                        value:false,
+                        visible:true,
+                        closeModal:true
+                    },
+                    confirm:{
+                        text:"Yes",
+                        value:true,
+                        visible:true,
+                        closeModal:true
+                    }
+                },
+                dangerMode:true
+            }).then((value) => {
+                if (value) {
+                    window.location.replace("./index.html")
+                }
+            });
+        }
+    </script>
+</body>
+</html>
