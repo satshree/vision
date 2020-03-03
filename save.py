@@ -5,7 +5,7 @@ import sys
 import json
 
 if __name__ == "__main__":
-    now = datetime.now().strftime("%Y %b. %d %I:%M:%S %p")
+    now = datetime.now().strftime("%Y-%B-%d %I:%M:%S %p %A")
 
     try:
         with open("vision.csv", "w") as file:
