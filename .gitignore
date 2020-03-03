@@ -4,7 +4,7 @@
 
 log.txt
 vision.csv
-node_modules/*
+node_modules/
 
 ### Code ###
 .vscode
