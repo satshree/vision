@@ -25,10 +25,32 @@
           <a href="./default.html"> <button class="waves-effect waves-light btn home-btn"> Let Vision Do The Dirty Work. </button> </a>
           <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn"> Scan The Network Yourself. </button> </a>
         </div>
+        <div style="padding:0 100px;">
+          <strong> Your IP Address: </strong><i id="ip"> ... </i> <br>
+          <strong> Your Gateway Address: </strong><i id="gateway"> ... </i>
+        </div>
       </div>
 
     <!--JavaScript at end of body for optimized loading-->
     <!-- <script type="text/javascript" src="materialize/js/materialize.js"></script> -->
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
   </body>
+  <script>
+    let {PythonShell} = require('python-shell')
+    let path = require("path")
+
+    let options = {
+      scriptPath : path.join(__dirname, '../'),
+      args: ['boot']
+    }
+
+    let pyshell = new PythonShell('main.py', options)
+
+    pyshell.on('message', function(message) {
+      message = JSON.parse(message)
+      document.getElementById("ip").innerHTML = message.ip
+      document.getElementById("gateway").innerHTML = message.gateway
+    })
+      
+  </script>
 </html>

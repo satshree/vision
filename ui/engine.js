@@ -1,5 +1,6 @@
 var {PythonShell} = require('python-shell')
 var path = require("path")
+window.$ = window.jQuery = require('./js/jquery.js');
 
 function displayData() {
     var app = new Vue({
@@ -10,10 +11,11 @@ function displayData() {
         methods:{
             hostExists() {
                 if (this.getData()) {
-                    if (this.getData().length > 0) {
-                        return true
-                    } else {
+                    let obj = this.getData()
+                    if (Object.keys(obj).length === 0 && obj.constructor === Object) {
                         return false
+                    } else {
+                        return true
                     }
                 } else {
                     return false
@@ -21,6 +23,7 @@ function displayData() {
             },
             mountData(data) {
                 this.result = data
+                setTimeout(mountTime, 100)
             },
             getData() {
                 return this.result
@@ -59,7 +62,7 @@ function initializeScan(args) {
         try {
             let pyshell = new PythonShell('main.py', options)
 
-            pyshell.on('message', function(message) {
+            pyshell.on('message', (message) => {
                 // console.log(message)
                 if (message.indexOf("Scanning") == -1) {
                     scanning = false
@@ -80,7 +83,11 @@ function initializeScan(args) {
                         let progress = message.split(",")[1]
                         let displayMessage = message.split(",")[0]
                         document.getElementById("progressBackground").innerHTML = `<strong>${displayMessage}</strong>`
-                        document.getElementById("progressBar").style.width = `${progress}%`
+                        if (displayMessage.indexOf("port") !== -1) {
+                            document.getElementById("progressBar").className = "indeterminate"
+                        } else {
+                            document.getElementById("progressBar").style.width = `${progress}%`
+                        }
                     } else {
                         document.getElementById("progressBackground").innerHTML = `<strong>${message}</strong>`
                     } 
@@ -90,7 +97,7 @@ function initializeScan(args) {
             displayError(err)
         }
     }).then((result) => {
-        vueObj.mountData(result)
+        vueObj.mountData(result);
     }).catch((err) => {
        displayError(err)
     })
@@ -106,4 +113,21 @@ function displayError(err) {
         <button type="button" class="btn waves-effect waves-light" onclick="location.reload()"> <i class="fas fa-redo" style="margin-right:5px;"></i> Reload </button>
     </div>
 `
+}
+
+function save(result) {
+    let options = {
+        scriptPath : path.join(__dirname, '../'),
+        args: [result]
+    }
+    let run = new PythonShell('save.py', options)
+    
+    status = run.receive()
+    return status
+}
+
+function mountTime() {
+    let finished = new Date()
+    let timetaken = Math.floor((finished.getTime() - window.time.getTime())/1000)
+    $("#timeTaken").html(`Total Time Taken To Scan: ${timetaken} seconds.`)
 }

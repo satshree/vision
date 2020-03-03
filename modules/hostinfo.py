@@ -35,7 +35,7 @@ def identify_hostname(IP):
         try:
             hostname = socket.gethostbyaddr(IP)[0]
         except:
-            hostname = "--------"
+            hostname = "----"
 
         return hostname
     except Exception as e:
@@ -49,8 +49,7 @@ def identify_hostname(IP):
         print("-" * 100)
         print("Thank you for using this program.\nDesigned and made by Satshree Shrestha.")
         print("-" * 100)
-        to_continue = input("\n\nPress Enter to continue.")
+        input("\n\nPress Enter to continue.")
         exit(0)
 
 ################################################################################
-### IMPLEMENT OS FINGERPRINTING HERE! ###

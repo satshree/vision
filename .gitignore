@@ -2,7 +2,7 @@
 # Created by https://www.gitignore.io/api/code,macos,python,windows
 # Edit at https://www.gitignore.io/?templates=code,macos,python,windows
 
-log.txt
+vision.csv
 
 ### Code ###
 .vscode

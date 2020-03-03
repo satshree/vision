@@ -1,5 +1,6 @@
-from scapy.all import IP, ARP, Ether, srp
+from scapy.all import IP, TCP, ARP, Ether, srp, sr1
 from modules import systeminfo, resources, hostinfo, portscanning
+from nmap import PortScanner
 import socket
 import sys
 import json
@@ -125,6 +126,9 @@ class NetworkScan:
             for host in self.hosts.keys():
                 self.hosts[host]['Ports'] = []
 
+                # Create IP packet targeted to host.
+                ip = IP(dst=host)
+
                 # Scan all well known ports.
                 for port in port_range:
                     # Print out status.
@@ -133,21 +137,24 @@ class NetworkScan:
                     except:
                         echo_result("Scanning port '{}' of host '{}'".format(port, host))
 
-                    # Create a TCP socket for connection.
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    # Create a TCP 'SYN' packet.
+                    tcp = TCP(dport=port, flags="S", seq=port)
 
-                    # Set connection time out.
-                    sock.settimeout(2)
+                    # Stack IP and TCP packets to send.
+                    packet = ip/tcp
 
                     # Connect to given port to check for open port.
-                    success = sock.connect_ex((host, int(port)))
+                    reply = sr1(packet, verbose=False, timeout=1)  # sr1 sends packets at Layer 3.
 
-                    if success == 0:
-                        # If the port is open.
-                        try:
-                            self.hosts[host]['Ports'].append("{} ({})".format(port, socket.getservbyport(port).upper()))
-                        except:
-                            self.hosts[host]['Ports'].append("{}".format(port))
+                    try:
+                        if reply.seq > 0:
+                            # If the port is open.
+                            try:
+                                self.hosts[host]['Ports'].append("{} ({})".format(port, socket.getservbyport(port).upper()))
+                            except:
+                                self.hosts[host]['Ports'].append("{}".format(port))
+                    except:
+                        pass
 
         else:
             # Port Scanning if called from elsewhere.
@@ -167,7 +174,25 @@ class NetworkScan:
     def os_detect(self):
         """ OS Fingerprinting. """
 
-        pass
+        _nmap = PortScanner()
+
+        echo_result("Scanning Operating System ... ")
+        if self.ip_range or not (self.ip_range and self.ip):
+            for ip in self.hosts.keys():
+                echo_result("Scanning Operating System of '{}' ... ".format(ip))
+                try:
+                    _nmap.scan(ip, arguments="-O")
+                except:
+                    self.hosts[ip]["OS"] = '----'
+                else:
+                    self.hosts[ip]["OS"] = _nmap[ip]["osmatch"][0]["name"]
+        else:
+            try:
+                _nmap.scan(self.ip, arguments="-O")
+            except:
+                self.hosts[self.ip]["OS"] = '----'
+            else:
+                self.hosts[self.ip]["OS"] = _nmap[self.ip]["osmatch"][0]["name"]
 
     @property
     def all_hosts(self):
@@ -288,9 +313,10 @@ def main():
         """)
         exit(0)
 
-    # Get vendor names and hostnames.
+    # Get vendor names, hostnames and operating system.
     net.vendor()
     net.hostname()
+    net.os_detect()
     hosts = net.hosts
 
     # Give out results to Electron.
@@ -298,4 +324,12 @@ def main():
 
 ### MAIN
 if __name__ == "__main__":
-    main()
+    if 'boot' in sys.argv:
+        ip = systeminfo.get_ip_address()
+        gateway = systeminfo.get_default_gateway()
+        echo_result(json.dumps({
+            'ip':ip,
+            'gateway':gateway
+        }))
+    else:
+        main()

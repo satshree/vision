@@ -33,13 +33,14 @@
             </div>
 
             <div id="result" style="display:none;">
-                <div v-if="hostExists">
+                <div id="table" v-if="hostExists()">
                     <table class="responsive-table">
                         <thead>
                             <th>IP Address</th>
                             <th>MAC Address</th>
                             <th>Manufacturer</th>
                             <th>Hostname</th>
+                            <th>Operating System</th>
                             <th>Open Ports</th>
                         </thead>
                         <tbody>
@@ -48,6 +49,7 @@
                                 <td>{{ meta.MAC }}</td>
                                 <td>{{ meta.Vendor }}</td>
                                 <td>{{ meta.Hostname }}</td>
+                                <td>{{ meta.OS }}</td>
                                 <td>
                                     <div v-for="ports in meta.Ports">
                                         {{ ports }}
@@ -56,13 +58,22 @@
                             </tr>
                         </tbody>
                     </table>
+                    <br> <br>
+                    <div class="row">
+                        <div class="col" style="float:left;">
+                            <small id="timeTaken"></small>
+                        </div>
+                        <div class="col" style="float:right;">
+                            <button type="button" class="btn waves-effect waves-light" onclick="saveAsCsv()"> <i class="fas fa-file-download"></i> Save As .csv File </button>
+                        </div>
+                    </div>
                 </div>
                 <div v-else>
                     <strong> <i class="fas fa-map-signs"></i> No Devices Found ... </strong>
                 </div>
                 <br>
                 <div class="center">
-                    <button type="button" class="btn waves-effect waves-light" onclick="initializeScan()"> <i class="fas fa-redo" style="margin-right:5px;"></i> Scan Network Again </button>
+                    <button type="button" class="btn waves-effect waves-light" onclick="rescan()"> <i class="fas fa-redo"></i> Scan Network Again </button>
                 </div>
             </div>
             <br> <br>
@@ -76,9 +87,54 @@
     <script src="./js/vue.js"></script>
     <script src="./engine.js"></script>
     <script>
-        initializeScan(['default'])
+        window.time = new Date()
+        var vueObj = initializeScan(['default'])
         var scanning = true
         let swal = require("sweetalert")
+
+        function saveAsCsv() {
+            let results = JSON.stringify(vueObj.getData())
+
+            let reply = save(results)
+
+            if (reply) {
+                swal({
+                    text: "Scan Results Saved.",
+                    icon: "success"
+                })
+            } else {
+                swal({
+                    text: "Saving Failed.",
+                    icon: "error"
+                })
+            }
+        }
+        
+        function rescan() {
+            swal({
+                text:"Are You Sure You Want To Discard The Results?",
+                icon:"warning",
+                buttons:{
+                    cancel:{
+                        text:"No",
+                        value:false,
+                        visible:true,
+                        closeModal:true
+                    },
+                    confirm:{
+                        text:"Yes",
+                        value:true,
+                        visible:true,
+                        closeModal:true
+                    }
+                },
+                dangerMode:true
+            }).then((value) => {
+                if (value) {
+                    vueObj = initializeScan(['default'])
+                }
+            });
+        }
 
         function confirmBack() {
             if (scanning) {

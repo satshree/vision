@@ -40,7 +40,7 @@ except Exception as e:
     print("6. database.txt")
     print("7. hostinfo.py")
     print("8. systeminfo.py")
-    to_continue = input("\n\nPress Enter to exit.")
+    input("\n\nPress Enter to exit.")
     exit(0)
 
 ################################################################################
@@ -351,7 +351,7 @@ if __name__ == "__main__":
             print("-" * 100)
 
             print("")
-            to_continue = input("\n Press enter to restart.")
+            input("\n Press enter to restart.")
 
             print("\n\n\n\n\n\n")
 
@@ -366,5 +366,5 @@ if __name__ == "__main__":
             print("-" * 100)
             print("Thank you for using this program.\nDesigned and made by Satshree Shrestha.")
             print("-" * 100)
-            to_continue = input("\n\nPress Enter to continue.")
+            input("\n\nPress Enter to continue.")
             exit(0)
