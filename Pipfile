@@ -10,7 +10,6 @@ autopep8 = "*"
 [packages]
 pylint = "*"
 scapy = "*"
-pyqt5 = "*"
 
 [requires]
 python_version = "3.7"
