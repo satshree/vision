@@ -10,7 +10,7 @@ if __name__ == "__main__":
     try:
         with open("vision.csv", "w") as file:
             pen = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            pen.writerow(['S.N', 'IP Address', 'MAC Address', 'Hostname', 'Operating System', 'Open Ports'])
+            pen.writerow(['S.N', 'IP Address', 'MAC Address', 'Manufacturer', 'Hostname', 'Operating System', 'Open Ports'])
 
             hosts = json.loads(sys.argv[-1])
             counter = 1
@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 else:
                     ports = '----'
 
-                pen.writerow([counter, host, info['MAC'], info['Hostname'], info['OS'], ports])
+                pen.writerow([counter, host, info['MAC'], info['Vendor'], info['Hostname'], info['OS'], ports])
                 counter += 1
                 
             pen.writerow([""])

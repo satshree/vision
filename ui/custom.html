@@ -75,7 +75,7 @@
                             </div>
                             <div class="input-field col s6">
                                 <input type="number" placeholder="Port Range" id="lastPort" class="validate">
-                                <label for="lastPort">Last Port of the range</label>
+                                <label for="lastPort">Last Port of the range (Optional)</label>
                             </div>
                         </div>
                         <button type="submit" class="btn waves-effect waves-light"> Scan! </button>
@@ -92,31 +92,45 @@
                 </div>
     
                 <div id="result" style="display:none;">
-                    <div v-if="hostExists()">
-                        <table class="responsive-table">
-                            <thead>
-                                <th>IP Address</th>
-                                <th>MAC Address</th>
-                                <th>Manufacturer</th>
-                                <th>Hostname</th>
-                                <th>Operating System</th>
-                                <th>Open Ports</th>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(meta, ip) in result">
-                                    <td>{{ ip }}</td>
-                                    <td>{{ meta.MAC }}</td>
-                                    <td>{{ meta.Vendor }}</td>
-                                    <td>{{ meta.Hostname }}</td>
-                                    <td>{{ meta.OS }}</td>
-                                    <td>
-                                        <div v-for="ports in meta.Ports">
-                                            {{ ports }}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row tab-bar">
+                        <div class="col s12">
+                            <div class="col s6"><button class="btn waves-light waves-effect" id="graphBtn" onclick="showGraph()">Graphical View</button></div>
+                            <div class="col s6"><button class="btn waves-light waves-effect" id="tableBtn" onclick="showTable()">Tabular View</button></div>
+                        </div>
+                    </div>
+                    <div id="resultContainer" v-if="hostExists()">
+                        <div id="table" style="display:none;">
+                            <h5> Tabular View </h5>
+                            <table class="responsive-table">
+                                <thead>
+                                    <th>IP Address</th>
+                                    <th>MAC Address</th>
+                                    <th>Manufacturer</th>
+                                    <th>Hostname</th>
+                                    <th>Operating System</th>
+                                    <th>Open Ports</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(meta, ip) in result">
+                                        <td>{{ ip }}</td>
+                                        <td>{{ meta.MAC }}</td>
+                                        <td>{{ meta.Vendor }}</td>
+                                        <td>{{ meta.Hostname }}</td>
+                                        <td>{{ meta.OS }}</td>
+                                        <td>
+                                            <div v-for="ports in meta.Ports">
+                                                {{ ports }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="graph">
+                            <h5> Graphical View </h5>
+                            <br> <br>
+                            <canvas id="graphical" width="400" height="200"></canvas>
+                        </div>
                         <br> <br>
                         <div class="row">
                             <div class="col" style="float:left;">
@@ -147,6 +161,7 @@
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
     <script src="./js/vue.js"></script>
     <script src="./engine.js"></script>
+    <script src="./visualize.js"></script>
     <script>
         //$(document).ready(function(){
         //})
@@ -164,6 +179,18 @@
             $("#ipRange").hide()
             $("#particularDevice").show()
         })
+
+        function showGraph() {
+            console.log("THERE")
+            $("#graph").show()
+            $("#table").hide()
+        }
+
+        function showTable() {
+            console.log("HERE")
+            $("#graph").hide()
+            $("#table").show()
+        }
 
         function reset() {
             swal({

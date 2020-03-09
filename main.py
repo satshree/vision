@@ -117,7 +117,7 @@ class NetworkScan:
 
             if not port_range:
                 # Get all well known ports.
-                port_range = resources.well_known_ports()
+                port_range = resources.get_port().keys()
             else:
                 # Initialize port range
                 port_range = range(int(port_range[0]), int(port_range[-1])+1)
@@ -133,9 +133,9 @@ class NetworkScan:
                 for port in port_range:
                     # Print out status.
                     try:
-                        echo_result("Scanning port '{} ({})' of host '{}'".format(port, socket.getservbyport(port).upper(), host))
+                        echo_result("Scanning port of '{}' | '{} ({})'".format(host, port, socket.getservbyport(port).upper()))
                     except:
-                        echo_result("Scanning port '{}' of host '{}'".format(port, host))
+                        echo_result("Scanning port of '{}' |'{}'".format(host, port))
 
                     # Create a TCP 'SYN' packet.
                     tcp = TCP(dport=port, flags="S", seq=port)
@@ -144,7 +144,7 @@ class NetworkScan:
                     packet = ip/tcp
 
                     # Connect to given port to check for open port.
-                    reply = sr1(packet, verbose=False, timeout=1)  # sr1 sends packets at Layer 3.
+                    reply = sr1(packet, verbose=False, timeout=0.7)  # sr1 sends packets at Layer 3.
 
                     try:
                         if reply.seq > 0:
@@ -218,7 +218,7 @@ def main():
             total_hosts = 0
             
             # Break loop if more than 2 subnets are found empty.
-            if net.empty_subnet_counter > 2:
+            if net.empty_subnet_counter == 2:
                 break
 
             # Scan the network with 5 scan attempts.
@@ -238,7 +238,7 @@ def main():
             else:
                 # Reset counter if next subnet is not empty.
                 net.reset_subnet_counter()
-
+            
             net.update_gateway()
         
         # Scan ports for the devices found
@@ -248,7 +248,7 @@ def main():
         # Initialize IP range.
         ip_range = []
         for ip in sys.argv:
-            if ip not in (current_file_path, 'main.py', 'range'):
+            if ip not in (current_file_path, 'main.py', 'range', '-no-json'):
                 ip_range.append(ip)
 
         # Initialize network scanner.
@@ -304,6 +304,9 @@ def main():
             Incorrect Parameters
             The following are the correct parameters to execute 'Vision',
 
+            ** -no-json (at last)
+                -- to output result in pretty format instead of json format.
+
             1. default
                 -- to initiate default scan.
             2. range <first IP of range> <last IP of range>
@@ -319,17 +322,36 @@ def main():
     net.os_detect()
     hosts = net.hosts
 
+    if '-no-json' in sys.argv[-1]:
+        print("IP\t\t|\tMAC\t|\t\tVendor\t|\tHostname\t\t|\tOS\t\t|\tOpen Ports")
+        for host, info in hosts.items():
+            print("{}\t\t|\t{}\t\t|\t{}\t\t|\t{}\t\t|\t{}\t\t|\t{}".format(
+                host,
+                info['MAC'],
+                info['Vendor'],
+                info['Hostname'],
+                info['OS'],
+                info['Ports']
+            ))
+    
     # Give out results to Electron.
     echo_result(json.dumps(hosts))
 
 ### MAIN
 if __name__ == "__main__":
     if 'boot' in sys.argv:
-        ip = systeminfo.get_ip_address()
-        gateway = systeminfo.get_default_gateway()
-        echo_result(json.dumps({
-            'ip':ip,
-            'gateway':gateway
-        }))
+        try:
+            ip = systeminfo.get_ip_address()
+            gateway = systeminfo.get_default_gateway()
+        except:
+            echo_result(json.dumps({
+                'ip':'Unable to find.',
+                'gateway':'Unable to find.'
+            }))
+        else:
+            echo_result(json.dumps({
+                'ip':ip,
+                'gateway':gateway
+            }))
     else:
         main()

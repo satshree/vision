@@ -11,6 +11,8 @@ function displayData() {
         methods:{
             hostExists() {
                 if (this.getData()) {
+                    // console.log(this.getData())
+                    // return true
                     let obj = this.getData()
                     if (Object.keys(obj).length === 0 && obj.constructor === Object) {
                         return false
@@ -28,6 +30,9 @@ function displayData() {
             getData() {
                 return this.result
             }
+        },
+        mounted:function(){
+            //
         },
         created:function(){
             // console.log("From Vue,", this.result)
@@ -98,6 +103,7 @@ function initializeScan(args) {
         }
     }).then((result) => {
         vueObj.mountData(result);
+        visualize(result)
     }).catch((err) => {
        displayError(err)
     })
