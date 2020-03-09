@@ -6,8 +6,9 @@ Vision will scan your network and list out all the online devices.
 The front end GUI of Vision is built with 'Electron'. The main backend process part is built completely in Python. 
 
 ## Requirements
-1. Python 3.*
-2. Install dependencies from Pipfile using pipenv.  
+1. Python 3.*  
+2. npm  
+3. Install dependencies from Pipfile using pipenv.  
 
 ## Usage
 Follow following steps to run Vision.  
