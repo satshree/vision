@@ -12,7 +12,7 @@ The front end GUI of Vision is built with 'Electron'. The main backend process p
 
 ## Usage
 Follow following steps to run Vision.  
-1. Run 'pipenv shell && pipenv update' where Pipfile is located  
+1. Run 'pipenv shell' and then 'pipenv update' where Pipfile is located  
 2. Run 'python networkscanner.py' for CLI use.  
 3. Run 'npm run start' or 'npm start' under directory /ui/ for GUI use.  
 
