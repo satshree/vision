@@ -304,9 +304,6 @@ def main():
             Incorrect Parameters
             The following are the correct parameters to execute 'Vision',
 
-            ** -no-json (at last)
-                -- to output result in pretty format instead of json format.
-
             1. default
                 -- to initiate default scan.
             2. range <first IP of range> <last IP of range>
@@ -321,18 +318,6 @@ def main():
     net.hostname()
     net.os_detect()
     hosts = net.hosts
-
-    if '-no-json' in sys.argv[-1]:
-        print("IP\t\t|\tMAC\t|\t\tVendor\t|\tHostname\t\t|\tOS\t\t|\tOpen Ports")
-        for host, info in hosts.items():
-            print("{}\t\t|\t{}\t\t|\t{}\t\t|\t{}\t\t|\t{}\t\t|\t{}".format(
-                host,
-                info['MAC'],
-                info['Vendor'],
-                info['Hostname'],
-                info['OS'],
-                info['Ports']
-            ))
     
     # Give out results to Electron.
     echo_result(json.dumps(hosts))
