@@ -8,7 +8,7 @@ The front end GUI of Vision is built with 'Electron'. The main backend process p
 ## Requirements
 1. Python 3.*  
 2. npm  
-3. Install dependencies from Pipfile using pipenv.  
+3. Install dependencies from Pipfile using 'pipenv' and package.json with 'npm install'.  
 
 ## Usage
 Follow following steps to run Vision.  
