@@ -34,6 +34,8 @@ function visualize(results) {
                 window.borderColor.push(border)
             }
         }
+
+        script.terminate()
     })
 
     $("#graphical").ready(function() {

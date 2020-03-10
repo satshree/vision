@@ -1,4 +1,5 @@
 var {PythonShell} = require('python-shell')
+var {exec, spawn} = require('child_process')
 var path = require("path")
 window.$ = window.jQuery = require('./js/jquery.js');
 
@@ -65,7 +66,7 @@ function initializeScan(args) {
         }
     
         try {
-            let pyshell = new PythonShell('main.py', options)
+            window.pyshell = new PythonShell('main.py', options)
 
             pyshell.on('message', (message) => {
                 // console.log(message)
@@ -104,8 +105,10 @@ function initializeScan(args) {
     }).then((result) => {
         vueObj.mountData(result);
         visualize(result)
+        window.pyshell.terminate();
     }).catch((err) => {
        displayError(err)
+       pyshell.terminate();
     })
 
     return vueObj
@@ -129,11 +132,13 @@ function save(result) {
     let run = new PythonShell('save.py', options)
     
     status = run.receive()
+    run.terminate()
     return status
 }
 
 function mountTime() {
     let finished = new Date()
     let timetaken = Math.floor((finished.getTime() - window.time.getTime())/1000)
-    $("#timeTaken").html(`Total Time Taken To Scan: ${timetaken} seconds.`)
+    let minutetaken = Math.floor(timetaken/60)
+    $("#timeTaken").html(`Total Time Taken To Scan: ${timetaken} seconds. (Roughly ${minutetaken} minutes)`)
 }

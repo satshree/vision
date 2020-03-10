@@ -21,11 +21,7 @@ if __name__ == "__main__":
         if check_ip(info['Vendor']):
             organized_data.append({
                 "IP":host,
-                "MAC":info["MAC"],
                 "Vendor":info["Vendor"],
-                "Hostname":info["Hostname"],
-                "OS":info["OS"],
-                "Ports":info["Ports"],
                 "Count":1
             })
     

@@ -92,13 +92,13 @@
                 </div>
     
                 <div id="result" style="display:none;">
-                    <div class="row tab-bar">
-                        <div class="col s12">
-                            <div class="col s6"><button class="btn waves-light waves-effect" id="graphBtn" onclick="showGraph()">Graphical View</button></div>
-                            <div class="col s6"><button class="btn waves-light waves-effect" id="tableBtn" onclick="showTable()">Tabular View</button></div>
-                        </div>
-                    </div>
                     <div id="resultContainer" v-if="hostExists()">
+                        <div class="row tab-bar">
+                            <div class="col s12">
+                                <div class="col s6"><button class="btn waves-light waves-effect" id="graphBtn" onclick="showGraph()">Graphical View</button></div>
+                                <div class="col s6"><button class="btn waves-light waves-effect" id="tableBtn" onclick="showTable()">Tabular View</button></div>
+                            </div>
+                        </div>
                         <div id="table" style="display:none;">
                             <h5> Tabular View </h5>
                             <table class="responsive-table">
@@ -181,13 +181,11 @@
         })
 
         function showGraph() {
-            console.log("THERE")
             $("#graph").show()
             $("#table").hide()
         }
 
         function showTable() {
-            console.log("HERE")
             $("#graph").hide()
             $("#table").show()
         }

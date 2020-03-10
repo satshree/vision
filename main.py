@@ -1,6 +1,7 @@
 from scapy.all import IP, TCP, ARP, Ether, srp, sr1
 from modules import systeminfo, resources, hostinfo, portscanning
 from nmap import PortScanner
+# from nmap3 import Nmap
 import socket
 import sys
 import json
@@ -175,24 +176,27 @@ class NetworkScan:
         """ OS Fingerprinting. """
 
         _nmap = PortScanner()
+        # _nmap = Nmap()
 
         echo_result("Scanning Operating System ... ")
         if self.ip_range or not (self.ip_range and self.ip):
             for ip in self.hosts.keys():
-                echo_result("Scanning Operating System of '{}' ... ".format(ip))
+                echo_result("Scanning Operating System of '{}' ... <br> <small>This will take long time.. please be patience..</small>".format(ip))
                 try:
                     _nmap.scan(ip, arguments="-O")
+                    # result = _nmap.nmap_os_detection(ip)
+                    self.hosts[ip]["OS"] = _nmap[ip]["osmatch"][0]["name"]
+                    # self.hosts[ip]["OS"] = result[0]["name"]
                 except:
                     self.hosts[ip]["OS"] = '----'
-                else:
-                    self.hosts[ip]["OS"] = _nmap[ip]["osmatch"][0]["name"]
         else:
             try:
                 _nmap.scan(self.ip, arguments="-O")
+                # result = _nmap.nmap_os_detection(self.ip)
+                self.hosts[self.ip]["OS"] = _nmap[self.ip]["osmatch"][0]["name"]
+                # self.hosts[self.ip]["OS"] = result[0]["name"]
             except:
                 self.hosts[self.ip]["OS"] = '----'
-            else:
-                self.hosts[self.ip]["OS"] = _nmap[self.ip]["osmatch"][0]["name"]
 
     @property
     def all_hosts(self):

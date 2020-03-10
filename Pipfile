@@ -11,6 +11,8 @@ autopep8 = "*"
 pylint = "*"
 scapy = "*"
 python-nmap = "*"
+python3-nmap = "*"
+simplejson = "*"
 
 [requires]
 python_version = "3.7"
