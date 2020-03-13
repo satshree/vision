@@ -15,16 +15,12 @@ function displayData() {
                     // console.log(this.getData())
                     // return true
                     let obj = this.getData()
-                    console.log("HERE", obj)
                     if (Object.keys(obj).length === 0 && obj.constructor === Object) {
-                        console.log("FALSE")
                         return false
                     } else {
-                        console.log("TRUE")
                         return true
                     }
                 } else {
-                    console.log("OUT")
                     return false
                 }
             },
@@ -62,7 +58,7 @@ function initializeScan(args) {
         document.getElementById("progressBar").className = "determinate"
     }
 
-    result = new Promise((resolve) => {
+    result = new Promise((resolve, reject) => {
         
         var options = {
             scriptPath : path.join(__dirname, '../'),
@@ -72,14 +68,24 @@ function initializeScan(args) {
         try {
             window.pyshell = new PythonShell('main.py', options)
 
-            pyshell.on('message', (message) => {
+            window.pyshell.on('message', (message) => {
                 // console.log(message)
                 if (message.indexOf("Scanning") == -1) {
                     scanning = false
 
                     if (method != "default") {
                         document.getElementById("progressBar").style.width = '0'
-                    }
+                    } 
+                    
+                    $("#resultContainer").ready(() => {
+                        if (method == "particular") {
+                            document.getElementById("rangeScan").style.display = 'none'
+                            document.getElementById("particularScan").style.display = 'block'
+                        } else if (method == "range") {
+                            document.getElementById("particularScan").style.display = 'none'
+                            document.getElementById("rangeScan").style.display = 'block'
+                        }
+                    })
 
                     document.getElementById("progressBox").style.display = 'none'
                     document.getElementById("progressBackground").style.display = 'none'
@@ -103,16 +109,22 @@ function initializeScan(args) {
                     } 
                 }
             })
+
+            window.pyshell.on('stderr', (stderr) => {
+                reject(stderr)
+            })
         } catch (err) {
             displayError(err)
         }
     }).then((result) => {
         vueObj.mountData(result);
-        visualize(result)
+        if (method != "particular") {
+            visualize(result)
+        }
         window.pyshell.terminate();
     }).catch((err) => {
        displayError(err)
-       pyshell.terminate();
+       window.pyshell.terminate();
     })
 
     return vueObj
@@ -129,15 +141,18 @@ function displayError(err) {
 }
 
 function save(result) {
-    let options = {
-        scriptPath : path.join(__dirname, '../'),
-        args: [result]
-    }
-    let run = new PythonShell('save.py', options)
-    
-    status = run.receive()
-    run.terminate()
-    return status
+    return new Promise((resolve) => {
+        let options = {
+            scriptPath : path.join(__dirname, '../'),
+            args: [result]
+        }
+        let run = new PythonShell('save.py', options)
+        
+        run.on('message', (status) => {
+            run.terminate()
+            resolve(status)
+        })
+    })
 }
 
 function mountTime() {

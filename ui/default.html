@@ -30,7 +30,7 @@
                     <div id="progressBar" class="indeterminate"></div>
                 </div>
                 <h5> Please wait while Vision scans the network. </h5>
-                <small> The More Wider The Network, The Longer It Takes To Scan. </small>
+                <small> The Wider The Network, The Longer It Takes To Scan. </small>
             </div>
             
             
@@ -111,12 +111,12 @@
         var scanning = true
         let swal = require("sweetalert")
 
-        function saveAsCsv() {
+        async function saveAsCsv() {
             let results = JSON.stringify(vueObj.getData())
 
-            let reply = save(results)
+            let reply = await save(results)
 
-            if (reply) {
+            if (JSON.parse(reply)) {
                 swal({
                     text: "Scan Results Saved.",
                     icon: "success",

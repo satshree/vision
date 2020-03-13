@@ -166,11 +166,6 @@ class NetworkScan:
                     portscanning.port_scanner(host, port_range[0], port_range[-1])
                 except:
                     raise Exception("Enter port range as [<first port>, <last port>]")
-
-    def banner_grabbing(self):
-        """ Perform banner grabbing. """
-
-        pass
     
     def os_detect(self):
         """ OS Fingerprinting. """
