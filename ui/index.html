@@ -12,6 +12,11 @@
     <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+      .info-box {
+        padding:0 150px;
+      }
+    </style>
   </head>
 
   <body>
@@ -25,9 +30,20 @@
           <a href="./default.html"> <button class="waves-effect waves-light btn home-btn"> Let Vision Do The Dirty Work. </button> </a>
           <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn"> Scan The Network Yourself. </button> </a>
         </div>
-        <div style="padding:0 100px;">
+        <div style="padding:0 100px;" class="center">
           <strong> Your IP Address: </strong><i id="ip"> ... </i> <br>
           <strong> Your Gateway Address: </strong><i id="gateway"> ... </i>
+        </div>
+        <br> <br>
+        <div class="container info-box">
+          <hr>
+          <p align="center">
+            Vision scans your network for online devices. You can let Vision scan the network, or you can tell Vision how to scan.
+            <br> <br>
+            <small>
+              Vision was started back in June of 2019 – developed by Satshree Shrestha.
+            </small>
+          </p>
         </div>
       </div>
 
@@ -36,8 +52,20 @@
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
   </body>
   <script>
-    let {PythonShell} = require('python-shell')
-    let path = require("path")
+    const swal = require('sweetalert')
+    const isRoot = require('is-root')
+    const remote = require('electron').remote
+    if (!isRoot()) {
+      swal({
+        text:"Please run 'Vision' as administrator.",
+        icon:"warning"
+      }).then(() => {
+        const w = remote.getCurrentWindow()
+        w.close()
+      })
+    }
+    const {PythonShell} = require('python-shell')
+    const path = require("path")
 
     let options = {
       scriptPath : path.join(__dirname, '../'),

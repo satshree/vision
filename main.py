@@ -181,7 +181,7 @@ class NetworkScan:
         echo_result("Scanning Operating System ... ")
         if self.ip_range or not (self.ip_range and self.ip):
             for ip in self.hosts.keys():
-                echo_result("Scanning Operating System of '{}' ... <br> <small>This will take long time.. please be patience..</small>".format(ip))
+                echo_result("Scanning Operating System of '{}' ... <br> <small>This will take long time.. please have patience..</small>".format(ip))
                 try:
                     _nmap.scan(ip, arguments="-O")
                     # result = _nmap.nmap_os_detection(ip)

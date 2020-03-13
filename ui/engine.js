@@ -15,12 +15,16 @@ function displayData() {
                     // console.log(this.getData())
                     // return true
                     let obj = this.getData()
+                    console.log("HERE", obj)
                     if (Object.keys(obj).length === 0 && obj.constructor === Object) {
+                        console.log("FALSE")
                         return false
                     } else {
+                        console.log("TRUE")
                         return true
                     }
                 } else {
+                    console.log("OUT")
                     return false
                 }
             },

@@ -12,8 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^2.9.3",
-    "child_process": "^1.0.2",
     "electron": "^8.0.0",
+    "is-root": "^2.1.0",
     "path": "^0.12.7",
     "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2"
