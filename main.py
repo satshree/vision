@@ -1,5 +1,5 @@
 from scapy.all import IP, TCP, ARP, Ether, srp, sr1
-from modules import systeminfo, resources, hostinfo, portscanning
+from modules import systeminfo, resources, hostinfo
 from nmap import PortScanner
 # from nmap3 import Nmap
 import socket
@@ -110,62 +110,49 @@ class NetworkScan:
             hostname = hostinfo.identify_hostname(ip)
             self.hosts[ip]['Hostname'] = hostname
 
-    def scan_port(self, port_range=None, internal=True, host=None):
+    def scan_port(self, port_range=None, host=None):
         """ Scan Port. """
 
-        if internal:
-            # Default port scanning called from main().
-
-            if not port_range:
-                # Get all well known ports.
-                port_range = resources.get_port().keys()
-            else:
-                # Initialize port range
-                port_range = range(int(port_range[0]), int(port_range[-1])+1)
-
-            # Scan port for all hosts.
-            for host in self.hosts.keys():
-                self.hosts[host]['Ports'] = []
-
-                # Create IP packet targeted to host.
-                ip = IP(dst=host)
-
-                # Scan all well known ports.
-                for port in port_range:
-                    # Print out status.
-                    try:
-                        echo_result("Scanning port of '{}' | '{} ({})'".format(host, port, socket.getservbyport(port).upper()))
-                    except:
-                        echo_result("Scanning port of '{}' |'{}'".format(host, port))
-
-                    # Create a TCP 'SYN' packet.
-                    tcp = TCP(dport=port, flags="S", seq=port)
-
-                    # Stack IP and TCP packets to send.
-                    packet = ip/tcp
-
-                    # Connect to given port to check for open port.
-                    reply = sr1(packet, verbose=False, timeout=0.7)  # sr1 sends packets at Layer 3.
-
-                    try:
-                        if reply.seq > 0:
-                            # If the port is open.
-                            try:
-                                self.hosts[host]['Ports'].append("{} ({})".format(port, socket.getservbyport(port).upper()))
-                            except:
-                                self.hosts[host]['Ports'].append("{}".format(port))
-                    except:
-                        pass
-
+        if not port_range:
+            # Get all well known ports.
+            port_range = resources.get_port().keys()
         else:
-            # Port Scanning if called from elsewhere.
-            if host:
-                raise Exception("Host IP not specified.")
-            else:
+            # Initialize port range
+            port_range = range(int(port_range[0]), int(port_range[-1])+1)
+
+        # Scan port for all hosts.
+        for host in self.hosts.keys():
+            self.hosts[host]['Ports'] = []
+
+            # Create IP packet targeted to host.
+            ip = IP(dst=host)
+
+            # Scan all well known ports.
+            for port in port_range:
+                # Print out status.
                 try:
-                    portscanning.port_scanner(host, port_range[0], port_range[-1])
+                    echo_result("Scanning port of '{}' | '{} ({})'".format(host, port, socket.getservbyport(port).upper()))
                 except:
-                    raise Exception("Enter port range as [<first port>, <last port>]")
+                    echo_result("Scanning port of '{}' |'{}'".format(host, port))
+
+                # Create a TCP 'SYN' packet.
+                tcp = TCP(dport=port, flags="S", seq=port)
+
+                # Stack IP and TCP packets to send.
+                packet = ip/tcp
+
+                # Connect to given port to check for open port.
+                reply = sr1(packet, verbose=False, timeout=0.7)  # sr1 sends packets at Layer 3.
+
+                try:
+                    if reply.seq > 0:
+                        # If the port is open.
+                        try:
+                            self.hosts[host]['Ports'].append("{} ({})".format(port, socket.getservbyport(port).upper()))
+                        except:
+                            self.hosts[host]['Ports'].append("{}".format(port))
+                except:
+                    pass
     
     def os_detect(self):
         """ OS Fingerprinting. """
