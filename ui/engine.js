@@ -1,6 +1,5 @@
-var {PythonShell} = require('python-shell')
-var {exec, spawn} = require('child_process')
-var path = require("path")
+const {PythonShell} = require('python-shell')
+const path = require("path")
 window.$ = window.jQuery = require('./js/jquery.js');
 
 function displayData() {
