@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vision</title>
+    <link rel="stylesheet" href="./style.css">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <!-- <link type="text/css" rel="stylesheet" href="materialize/css/materialize.css"  media="screen,projection"/> -->
+    <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.min.css"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
+</head>
+<body>
+    <div class="container">
+        <div class="title center">
+          <h1>Vision</h1>
+          <strong> Seek and You Shall Receive </strong>
+        </div>
+        <hr>
+        <a href="./index.html" class="btn waves-effect waves-light"><i class="fas fa-arrow-left"></i> Back </a>
+        <div class="contents center">
+            <div class="header center">
+                <strong> These devices are generating web requests in your internet traffic. </strong> <br>
+                <small>Monitoring HTTP/HTTPS request initiators</small>
+            </div>
+            <br>
+            <canvas id="graphical" width="400" height="150"></canvas>
+            <small id="msg"> Try To Resize The Window If The Chart Does Not Update</small>
+            <div id="err" style="display:none;"></div>
+        </div>
+      </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <!-- <script type="text/javascript" src="./materialize/js/materialize.js"></script> -->
+    <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
+    <script src="./visualize_live.js"></script>
+    <script>
+        visualize()
+        // setInterval(() => document.getElementById("graphical").width+=0, 1000);
+    </script>
+</body>
+</html>

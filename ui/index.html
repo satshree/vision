@@ -12,6 +12,7 @@
     <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
     <style>
       .info-box {
         padding:0 150px;
@@ -27,8 +28,9 @@
         </div>
         <hr>
         <div class="contents center">
-          <a href="./default.html"> <button class="waves-effect waves-light btn home-btn"> Let Vision Do The Dirty Work. </button> </a>
-          <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn"> Scan The Network Yourself. </button> </a>
+          <a href="./default.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Vision will scan everything for you."> Let Vision Do The Dirty Work. </button> </a>
+          <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Tell Vision how to scan the network."> Scan The Network Yourself. </button> </a>
+          <a href="./live.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Monitor live HTTP/HTTPS Requests."> Monitor Your Internet Traffic. </button> </a>
         </div>
         <div style="padding:0 100px;" class="center">
           <strong> Your IP Address: </strong><i id="ip"> ... </i> <br>
@@ -38,8 +40,8 @@
         <div class="container info-box">
           <hr>
           <p align="center">
-            Vision scans your network for online devices. You can let Vision scan the network, or you can tell Vision how to scan.
-            <br> <br>
+            Vision scans your network for online devices.
+            <br>
             <small>
               Vision was started back in June of 2019 – developed by Satshree Shrestha.
             </small>
@@ -81,5 +83,10 @@
       pyshell.terminate()
     })
       
+  </script>
+  <script>
+    $(document).ready(function(){
+      $('.tooltipped').tooltip();
+    });
   </script>
 </html>
