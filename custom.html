@@ -31,6 +31,15 @@
         </div>
         <hr>
         <button type="button" id="back" class="btn waves-effect waves-light" onclick="confirmBack()"><i class="fas fa-arrow-left"></i> Back </button>
+        <div class="center container" id="scanOsProgress" style="display:none;">
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+            <div>
+                <strong> Scanning Operating System of host <i id="osHost"></i> ... </strong> <br>
+                <em> This can take long time ... </em>
+            </div>
+        </div>
         <div class="contents center">
             <div id="prompt">
                 <div id="buttonGroup">
@@ -64,7 +73,7 @@
                         <br>
                         <input type="text" id="deviceIp" placeholder="example: 192.168.1.1" class="validate">
                         <br> <br>
-                        <strong class="center"> Enter the Port Range (Optional)</strong>
+                        <!-- <strong class="center"> Enter the Port Range (Optional)</strong>
                         <br>
                         <small> Port Numbers define services running on a device. </small>
                         <br> <br>
@@ -77,7 +86,7 @@
                                 <input type="number" placeholder="Port Range" id="lastPort" class="validate">
                                 <label for="lastPort">Last Port of the range (Optional)</label>
                             </div>
-                        </div>
+                        </div> -->
                         <button type="submit" class="btn waves-effect waves-light"> Scan! </button>
                     </form>
                 </div>
@@ -102,7 +111,7 @@
                             </div>
                             <div id="table" style="display:none;">
                                 <h5> Tabular View </h5>
-                                <table class="responsive-table">
+                                <table class="responsive-table centered">
                                     <thead>
                                         <th>IP Address</th>
                                         <th>MAC Address</th>
@@ -110,6 +119,7 @@
                                         <th>Hostname</th>
                                         <th>Operating System</th>
                                         <th>Open Ports</th>
+                                        <th>Scan</th>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(meta, ip) in result">
@@ -117,11 +127,15 @@
                                             <td>{{ meta.MAC }}</td>
                                             <td>{{ meta.Vendor }}</td>
                                             <td>{{ meta.Hostname }}</td>
-                                            <td>{{ meta.OS }}</td>
+                                            <td :id="ip">{{ meta.OS }}</td>
                                             <td>
                                                 <div v-for="ports in meta.Ports">
                                                     {{ ports }}
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
+                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -138,7 +152,7 @@
                             <div v-for="(meta, ip) in result">
                                 <strong> Scan on "{{ip}}" completed </strong>
                                 <br>
-                                <table class="responsive-table">
+                                <table class="responsive-table centered">
                                     <thead>
                                         <th>IP Address</th>
                                         <th>MAC Address</th>
@@ -146,6 +160,7 @@
                                         <th>Hostname</th>
                                         <th>Operating System</th>
                                         <th>Open Ports</th>
+                                        <th>Scan</th>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(meta, ip) in result">
@@ -158,6 +173,10 @@
                                                 <div v-for="ports in meta.Ports">
                                                     {{ ports }}
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
+                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -188,6 +207,44 @@
             <script>$("#resultBox").hide()</script>
         </div>
     </div>
+
+    <div id="portModal" class="modal">
+        <div class="modal-content">
+            <h4>Scan Ports</h4>
+            <hr>
+            <div id="scanPortFormDiv">
+                <form id="scanPortForm">
+                    <input type="hidden" id="hostIP">
+                    <br>
+                    <div class="input-field">
+                        <label for="ports">Enter range of ports <small>Example: 80, 443</small></label>
+                        <input type="text" id="ports" class="validate">
+                    </div>
+                    <br>
+                    <div class="center">
+                        <button type="submit" class="btn waves-effect waves-light">Scan</button>
+                    </div>
+                </form>
+            </div>
+            <div id="scanPortProgress" class="center" style="display:none;">
+                <br>
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
     
     <!--JavaScript at end of body for optimized loading-->
     <!-- <script type="text/javascript" src="materialize/js/materialize.js"></script> -->
@@ -196,9 +253,6 @@
     <script src="./engine.js"></script>
     <script src="./visualize.js"></script>
     <script>
-        //$(document).ready(function(){
-        //})
-
         $("#btnIpRange").click(function(event){
             event.preventDefault()
 
@@ -244,10 +298,13 @@
                 dangerMode:true
             }).then((value) => {
                 if (value) {
-                    $("#prompt").show()
-                    $("#resultBox").hide()
-                    scanning = true
+                    location.reload()
                 }
+                //if (value) {
+                //    $("#prompt").show()
+                //    $("#resultBox").hide()
+                //    scanning = true
+                //}
             });
         }
     </script>
@@ -300,34 +357,34 @@
 
             if (ip) {
                 let args = ['particular', ip]
-                let firstPort = $("#firstPort").val()
-                let lastPort = $("#lastPort").val()
+                // let firstPort = $("#firstPort").val()
+                // let lastPort = $("#lastPort").val()
                 
-                if (firstPort && lastPort) {
-                    if (parseInt(firstPort) > parseInt(lastPort)) {
-                        swal({
-                            text:"Invalid port range!",
-                            icon:"error"
-                        })
+                // if (firstPort && lastPort) {
+                //     if (parseInt(firstPort) > parseInt(lastPort)) {
+                //         swal({
+                //             text:"Invalid port range!",
+                //             icon:"error"
+                //         })
 
-                        return false   
-                    } else {
-                        args.push('port')
-                        args.push([firstPort, lastPort])
-                    }
-                } else {
-                    if (!(firstPort) && lastPort) {
-                        swal({
-                            text:"Invalid port range!",
-                            icon:"error"
-                        })
+                //         return false   
+                //     } else {
+                //         args.push('port')
+                //         args.push([firstPort, lastPort])
+                //     }
+                // } else {
+                //     if (!(firstPort) && lastPort) {
+                //         swal({
+                //             text:"Invalid port range!",
+                //             icon:"error"
+                //         })
 
-                        return false
-                    } else if (firstPort) {
-                        args.push('port')
-                        args.push([firstPort])
-                    } 
-                }
+                //         return false
+                //     } else if (firstPort) {
+                //         args.push('port')
+                //         args.push([firstPort])
+                //     } 
+                // }
 
                 $("#prompt").hide()
                 $("#resultBox").show()

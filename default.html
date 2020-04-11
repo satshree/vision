@@ -24,6 +24,15 @@
         </div>
         <hr>
         <button type="button" id="back" class="btn waves-effect waves-light" onclick="confirmBack()"><i class="fas fa-arrow-left"></i> Back </button>
+        <div class="center container" id="scanOsProgress" style="display:none;">
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+            <div>
+                <strong> Scanning Operating System of host <i id="osHost"></i> ... </strong> <br>
+                <em> This can take long time ... </em>
+            </div>
+        </div>
         <div class="contents center">
             <div id="progressBox">
                 <div class="progress">
@@ -31,9 +40,7 @@
                 </div>
                 <h5> Please wait while Vision scans the network. </h5>
                 <small> The Wider The Network, The Longer It Takes To Scan. </small>
-            </div>
-            
-            
+            </div>            
             <div id="result" style="display:none;">
                 <div id="resultContainer" v-if="hostExists()">
                     <div class="row tab-bar">
@@ -44,7 +51,7 @@
                     </div>
                     <div id="table" style="display:none;">
                         <h5> Tabular View </h5>
-                        <table class="responsive-table">
+                        <table class="responsive-table centered">
                             <thead>
                                 <th>IP Address</th>
                                 <th>MAC Address</th>
@@ -52,6 +59,7 @@
                                 <th>Hostname</th>
                                 <th>Operating System</th>
                                 <th>Open Ports</th>
+                                <th>Scan</th>
                             </thead>
                             <tbody>
                                 <tr v-for="(meta, ip) in result">
@@ -59,11 +67,15 @@
                                     <td>{{ meta.MAC }}</td>
                                     <td>{{ meta.Vendor }}</td>
                                     <td>{{ meta.Hostname }}</td>
-                                    <td>{{ meta.OS }}</td>
+                                    <td :id="ip">{{ meta.OS }}</td>
                                     <td>
                                         <div v-for="ports in meta.Ports">
                                             {{ ports }}
                                         </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
+                                        <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -97,6 +109,44 @@
             <div id="progressBackground"></div>
         </div>
       </div>
+
+    <div id="portModal" class="modal">
+        <div class="modal-content">
+            <h4>Scan Ports</h4>
+            <hr>
+            <div id="scanPortFormDiv">
+                <form id="scanPortForm">
+                    <input type="hidden" id="hostIP">
+                    <br>
+                    <div class="input-field">
+                        <label for="ports">Enter range of ports <small>Example: 80, 443</small></label>
+                        <input type="text" id="ports" class="validate">
+                    </div>
+                    <br>
+                    <div class="center">
+                        <button type="submit" class="btn waves-effect waves-light">Scan</button>
+                    </div>
+                </form>
+            </div>
+            <div id="scanPortProgress" class="center" style="display:none;">
+                <br>
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
 
     <!--JavaScript at end of body for optimized loading-->
     <!-- <script type="text/javascript" src="./materialize/js/materialize.js"></script> -->
@@ -163,8 +213,11 @@
                 dangerMode:true
             }).then((value) => {
                 if (value) {
-                    vueObj = initializeScan(['default'])
+                    location.reload()
                 }
+                //if (value) {
+                //    vueObj = initializeScan(['default'])
+                //}
             });
         }
 

@@ -1,8 +1,10 @@
-from main import echo_result
-from datetime import datetime
 import csv
 import sys
 import json
+from modules.common import echo_result
+from datetime import datetime
+
+__author__ = "Satshree Shrestha"
 
 if __name__ == "__main__":
     now = datetime.now().strftime("%Y-%B-%d %I:%M:%S %p %A")

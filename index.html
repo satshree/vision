@@ -30,7 +30,7 @@
         <div class="contents center">
           <a href="./default.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Vision will scan everything for you."> Let Vision Do The Dirty Work. </button> </a>
           <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Tell Vision how to scan the network."> Scan The Network Yourself. </button> </a>
-          <a href="./live.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Monitor live HTTP/HTTPS Requests."> Monitor Your Internet Traffic. </button> </a>
+          <!-- <a href="./live.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Monitor live HTTP/HTTPS Requests."> Monitor Your Internet Traffic. </button> </a> -->
         </div>
         <div style="padding:0 100px;" class="center">
           <strong> Your IP Address: </strong><i id="ip"> ... </i> <br>
@@ -55,26 +55,27 @@
   </body>
   <script>
     const swal = require('sweetalert')
-    const isRoot = require('is-root')
     const remote = require('electron').remote
-    if (!isRoot()) {
-      swal({
-        text:"Please run 'Vision' as administrator.",
-        icon:"warning"
-      }).then(() => {
-        const w = remote.getCurrentWindow()
-        w.close()
-      })
+    if (process.platform !== "win32") {
+      const isRoot = require('is-root')
+      if (!isRoot()) {
+        swal({
+          text:"Please run 'Vision' as administrator.",
+          icon:"warning"
+        }).then(() => {
+          const w = remote.getCurrentWindow()
+          w.close()
+        })
+      }
     }
     const {PythonShell} = require('python-shell')
     const path = require("path")
 
     let options = {
-      scriptPath : path.join(__dirname, '../'),
-      args: ['boot']
+      scriptPath : path.join(__dirname, './engine/')
     }
 
-    let pyshell = new PythonShell('main.py', options)
+    let pyshell = new PythonShell('boot.py', options)
 
     pyshell.on('message', function(message) {
       message = JSON.parse(message)

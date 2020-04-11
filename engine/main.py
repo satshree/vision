@@ -1,11 +1,11 @@
-from scapy.all import IP, TCP, ARP, Ether, srp, sr1
-from modules import systeminfo, resources, hostinfo
-from nmap import PortScanner
-# from nmap3 import Nmap
 import socket
 import sys
 import json
 import os
+from scapy.all import IP, TCP, ARP, Ether, srp, sr1
+from modules import systeminfo, resources, hostinfo
+from modules.common import echo_result
+from port import scan_port
 
 __author__ = "Satshree Shrestha"
 
@@ -89,7 +89,7 @@ class NetworkScan:
         # Catch online hosts
         for element in answered:
             # 'psrc' refers to IP address | 'hwsrc' refers to MAC address.
-            self.hosts[element[1].psrc] = {'MAC': element[1].hwsrc.upper()}
+            self.hosts[element[1].psrc] = {'MAC': element[1].hwsrc.upper(), "OS":"", "Ports":[]}
         
         return len(answered)
 
@@ -110,88 +110,12 @@ class NetworkScan:
             hostname = hostinfo.identify_hostname(ip)
             self.hosts[ip]['Hostname'] = hostname
 
-    def scan_port(self, port_range=None, host=None):
-        """ Scan Port. """
-
-        if not port_range:
-            # Get all well known ports.
-            port_range = resources.get_port().keys()
-        else:
-            # Initialize port range
-            port_range = range(int(port_range[0]), int(port_range[-1])+1)
-
-        # Scan port for all hosts.
-        for host in self.hosts.keys():
-            self.hosts[host]['Ports'] = []
-
-            # Create IP packet targeted to host.
-            ip = IP(dst=host)
-
-            # Scan all well known ports.
-            for port in port_range:
-                # Print out status.
-                try:
-                    echo_result("Scanning port of '{}' | '{} ({})'".format(host, port, socket.getservbyport(port).upper()))
-                except:
-                    echo_result("Scanning port of '{}' |'{}'".format(host, port))
-
-                # Create a TCP 'SYN' packet.
-                tcp = TCP(dport=port, flags="S", seq=port)
-
-                # Stack IP and TCP packets to send.
-                packet = ip/tcp
-
-                # Connect to given port to check for open port.
-                reply = sr1(packet, verbose=False, timeout=0.7)  # sr1 sends packets at Layer 3.
-
-                try:
-                    if reply.seq > 0:
-                        # If the port is open.
-                        try:
-                            self.hosts[host]['Ports'].append("{} ({})".format(port, socket.getservbyport(port).upper()))
-                        except:
-                            self.hosts[host]['Ports'].append("{}".format(port))
-                except:
-                    pass
-    
-    def os_detect(self):
-        """ OS Fingerprinting. """
-
-        _nmap = PortScanner()
-        # _nmap = Nmap()
-
-        echo_result("Scanning Operating System ... ")
-        if self.ip_range or not (self.ip_range and self.ip):
-            for ip in self.hosts.keys():
-                echo_result("Scanning Operating System of '{}' ... <br> <small>This will take long time.. please have patience..</small>".format(ip))
-                try:
-                    _nmap.scan(ip, arguments="-O")
-                    # result = _nmap.nmap_os_detection(ip)
-                    self.hosts[ip]["OS"] = _nmap[ip]["osmatch"][0]["name"]
-                    # self.hosts[ip]["OS"] = result[0]["name"]
-                except:
-                    self.hosts[ip]["OS"] = '----'
-        else:
-            try:
-                _nmap.scan(self.ip, arguments="-O")
-                # result = _nmap.nmap_os_detection(self.ip)
-                self.hosts[self.ip]["OS"] = _nmap[self.ip]["osmatch"][0]["name"]
-                # self.hosts[self.ip]["OS"] = result[0]["name"]
-            except:
-                self.hosts[self.ip]["OS"] = '----'
-
     @property
     def all_hosts(self):
         """ Return all the hosts. """
         return self.hosts
 
 ### FUNCTION
-def echo_result(message):
-    """ Print out message to system. """
-
-    print(message)
-    sys.stdout.flush()
-
 def main():
     """ Main module. """
     echo_result("Scanning your network ...")
@@ -226,15 +150,12 @@ def main():
                 net.reset_subnet_counter()
             
             net.update_gateway()
-        
-        # Scan ports for the devices found
-        net.scan_port()
            
     elif 'range' in sys.argv:
         # Initialize IP range.
         ip_range = []
         for ip in sys.argv:
-            if ip not in (current_file_path, 'main.py', 'range', '-no-json'):
+            if ip not in (current_file_path, 'main.py', 'range'):
                 ip_range.append(ip)
 
         # Initialize network scanner.
@@ -260,7 +181,7 @@ def main():
                 break
 
             # Send status to Electron.
-            echo_result("Scanning IP: {} | {} of {} devices,{}".format(net.ip, progress, total_ip, total_progress))
+            echo_result("Scanning Host: {} | {} of {} devices,{}".format(net.ip, progress, total_ip, total_progress))
 
             # Scan the network.
             net.scan()
@@ -268,61 +189,23 @@ def main():
             # Update IP address.
             net.update_ip()      
 
-        # Scan ports for the devices found
-        net.scan_port()      
-
     elif 'particular' in sys.argv:
-        ip = sys.argv[2]
+        ip = sys.argv[-1]
 
         # Initialize network scanner.
         net = NetworkScan(ip=ip)
 
-        echo_result("Scanning IP '{}' ...".format(ip))
+        echo_result("Scanning Host '{}' ...".format(ip))
         net.scan()
-
-        if 'port' in sys.argv:
-            # Scan given ports.
-            net.scan_port(port_range=sys.argv[-1].split(","))
-
-    else:
-        print(
-        """
-            Incorrect Parameters
-            The following are the correct parameters to execute 'Vision',
-
-            1. default
-                -- to initiate default scan.
-            2. range <first IP of range> <last IP of range>
-                -- to scan range of IP addresses.
-            3. particular <IP address> port (optional) [<first port of the range>, <last port of the range (optional)]>
-                -- to scan particular device along with port scanning.
-        """)
-        exit(0)
 
     # Get vendor names, hostnames and operating system.
     net.vendor()
     net.hostname()
-    net.os_detect()
-    hosts = net.hosts
+    hosts = net.all_hosts
     
     # Give out results to Electron.
     echo_result(json.dumps(hosts))
 
 ### MAIN
 if __name__ == "__main__":
-    if 'boot' in sys.argv:
-        try:
-            ip = systeminfo.get_ip_address()
-            gateway = systeminfo.get_default_gateway()
-        except:
-            echo_result(json.dumps({
-                'ip':'Unable to find.',
-                'gateway':'Unable to find.'
-            }))
-        else:
-            echo_result(json.dumps({
-                'ip':ip,
-                'gateway':gateway
-            }))
-    else:
-        main()
+    main()

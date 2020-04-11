@@ -12,10 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^2.9.3",
-    "electron": "^8.0.0",
     "is-root": "^2.1.0",
     "path": "^0.12.7",
     "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2"
+  },
+  "devDependencies": {
+    "electron": "^8.0.0",
+    "electron-wix-msi": "^2.2.0"
   }
 }

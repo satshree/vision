@@ -2,6 +2,18 @@ const {PythonShell} = require('python-shell')
 const path = require("path")
 window.$ = window.jQuery = require('./js/jquery.js');
 
+// const loader = `<div class="preloader-wrapper big active">
+// <div class="spinner-layer spinner-blue-only">
+//   <div class="circle-clipper left">
+//     <div class="circle"></div>
+//   </div><div class="gap-patch">
+//     <div class="circle"></div>
+//   </div><div class="circle-clipper right">
+//     <div class="circle"></div>
+//   </div>
+// </div>
+// </div>`
+
 function displayData() {
     var app = new Vue({
         el:"#result",
@@ -23,9 +35,35 @@ function displayData() {
                     return false
                 }
             },
+            scanOS(ip) {
+                $("#scanOsProgress").show()
+                $("#osHost").html(ip)
+                $(".os-btn").attr("disabled", "disabled")
+
+                let options = {
+                    scriptPath : path.join(__dirname, './engine/'),
+                    args: [ip]
+                }
+
+                let osScript = new PythonShell("os.py", options)
+
+                osScript.on('message', (message) => {
+                    $(`#${ip}`).html(message)
+                    this.mountOS(ip, message)
+                    $("#scanOsProgress").hide()
+                    $(".os-btn").removeAttr("disabled")
+                    osScript.terminate()
+                })
+            },
             mountData(data) {
                 this.result = data
                 setTimeout(mountTime, 100)
+            },
+            mountPort(host, ports) {
+                this.getData()[host].Ports = ports
+            },
+            mountOS(host, os) {
+                this.getData()[host].OS = os
             },
             getData() {
                 return this.result
@@ -49,6 +87,7 @@ function initializeScan(args) {
     document.getElementById("progressBackground").style.display = 'block'
     
     var vueObj = displayData()
+    window.vueObj = vueObj
     var method = args[0]
 
     if (method == "particular" || method == "default") {
@@ -60,7 +99,7 @@ function initializeScan(args) {
     result = new Promise((resolve, reject) => {
         
         var options = {
-            scriptPath : path.join(__dirname, '../'),
+            scriptPath : path.join(__dirname, './engine/'),
             args: args
         }
     
@@ -129,6 +168,12 @@ function initializeScan(args) {
     return vueObj
 }
 
+function scanPort(btn) {
+    // console.log($(btn))
+    $("#hostIP").val($(btn).attr("ip"))
+    $("#portModal").modal("open")
+}
+
 function displayError(err) {
     document.getElementById("result").innerHTML = `
     <div>
@@ -142,7 +187,7 @@ function displayError(err) {
 function save(result) {
     return new Promise((resolve) => {
         let options = {
-            scriptPath : path.join(__dirname, '../'),
+            scriptPath : path.join(__dirname, './engine/'),
             args: [result]
         }
         let run = new PythonShell('save.py', options)
@@ -160,3 +205,40 @@ function mountTime() {
     let minutetaken = Math.floor(timetaken/60)
     $("#timeTaken").html(`Total Time Taken To Scan: ${timetaken} seconds. (Roughly ${minutetaken} minutes)`)
 }
+
+$(document).ready(() => $("#portModal").modal())
+
+$("#scanPortForm").submit(function(event) {
+    event.preventDefault()
+
+    $("#scanPortFormDiv").hide()
+    $("#scanPortProgress").show()
+
+    let host = $("#hostIP").val()
+    let ports = $("#ports").val()
+
+    let options = {
+        scriptPath : path.join(__dirname, './engine/'),
+        args: [host, ports]
+    }
+
+    let portScript = new PythonShell("port.py", options)
+
+    portScript.on('message', (message) => {
+        let openPorts = JSON.parse(message)
+
+        if (openPorts.length > 0) {
+            window.vueObj.mountPort(host, openPorts)
+        } else {
+            swal({
+                text:"No Open Ports Found.",
+                icon:"warning"
+            })
+        }
+
+        $("#portModal").modal("close")
+        $("#scanPortFormDiv").show()
+        $("#scanPortProgress").hide()
+        portScript.terminate()
+    })
+})

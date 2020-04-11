@@ -1,8 +1,10 @@
+import json
 from modules.systeminfo import get_wlan_iface, get_ip_address
 from collections import Counter
 from scapy.all import sniff as _
-from main import echo_result
-import json
+from modules.common import echo_result
+
+__author__ = "Satshree Shrestha"
 
 iface = get_wlan_iface()
 counter = Counter()
