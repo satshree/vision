@@ -1,4 +1,8 @@
-const {app, BrowserWindow, Menu} = require('electron')
+const {
+    app, 
+    BrowserWindow, 
+    Menu
+} = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -66,6 +70,10 @@ function createWindow() {
         protocol:'file',
         slashes:true
     }))
+
+    // if (!isMac) {
+    //     win.removeMenu()
+    // }
 }
 
 if (isMac) {
@@ -87,6 +95,8 @@ if (isMac) {
     )
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
+} else {
+
 }
 
 app.on('ready', createWindow)

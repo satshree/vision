@@ -1,8 +1,9 @@
 """ Organize Data for Vision. """
-__author__ = "Satshree Shrestha"
-from main import echo_result
 import sys
 import json 
+from modules.common import echo_result
+
+__author__ = "Satshree Shrestha"
 
 organized_data = []
 

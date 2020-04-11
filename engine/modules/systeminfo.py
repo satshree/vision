@@ -1,6 +1,5 @@
 """ 
     System related informations for Vision.
-    Date Created = 1 December 2019
 """ 
 __author__ = "Satshree Shrestha"
 

@@ -29,3 +29,7 @@ button {
 .tab {
     background-color: #eceff1;
 }
+
+.btn-margin {
+    margin:5px;
+}
