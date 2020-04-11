@@ -55,17 +55,19 @@
   </body>
   <script>
     const swal = require('sweetalert')
-    //const isRoot = require('is-root')
     const remote = require('electron').remote
-    //if (!isRoot()) {
-    //  swal({
-    //    text:"Please run 'Vision' as administrator.",
-    //    icon:"warning"
-    //  }).then(() => {
-    //    const w = remote.getCurrentWindow()
-    //    w.close()
-    //  })
-    //}
+    if (process.platform !== "win32") {
+      const isRoot = require('is-root')
+      if (!isRoot()) {
+        swal({
+          text:"Please run 'Vision' as administrator.",
+          icon:"warning"
+        }).then(() => {
+          const w = remote.getCurrentWindow()
+          w.close()
+        })
+      }
+    }
     const {PythonShell} = require('python-shell')
     const path = require("path")
 

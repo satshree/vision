@@ -71,9 +71,9 @@ function createWindow() {
         slashes:true
     }))
 
-    // if (!isMac) {
-    //     win.removeMenu()
-    // }
+    if (!isMac) {
+        win.removeMenu()
+    }
 }
 
 if (isMac) {
