@@ -2,18 +2,6 @@ const {PythonShell} = require('python-shell')
 const path = require("path")
 window.$ = window.jQuery = require('./js/jquery.js');
 
-// const loader = `<div class="preloader-wrapper big active">
-// <div class="spinner-layer spinner-blue-only">
-//   <div class="circle-clipper left">
-//     <div class="circle"></div>
-//   </div><div class="gap-patch">
-//     <div class="circle"></div>
-//   </div><div class="circle-clipper right">
-//     <div class="circle"></div>
-//   </div>
-// </div>
-// </div>`
-
 function displayData() {
     var app = new Vue({
         el:"#result",
@@ -219,7 +207,7 @@ $("#scanPortForm").submit(function(event) {
 
     let options = {
         scriptPath : path.join(__dirname, './engine/'),
-        args: [host, ports]
+        args: [host, "ports", ports]
     }
 
     let portScript = new PythonShell("port.py", options)

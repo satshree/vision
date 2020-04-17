@@ -74,8 +74,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
-                                        <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
+                                        <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin" onclick="scanPort(this)">Port</button>
+                                        <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin" @click="scanOS(ip)">OS</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -169,10 +169,9 @@
 
             if (JSON.parse(reply)) {
                 swal({
-                    text: "Scan Results Saved.",
+                    title: "Scan Results Saved.",
+                    text:"File saved on your desktop.",
                     icon: "success",
-                    buttons:false,
-                    timer:1500
                 })
             } else {
                 swal({

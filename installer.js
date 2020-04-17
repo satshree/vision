@@ -1,16 +1,22 @@
-const {path} = require('path');
-const { MSICreator } = require('electron-wix-msi');
+import * as msi from 'electron-wix-msi';
+import * as path from 'path';
 
-const appDir = path.join(__dirname, "app")
-const outDir = path.join(__dirname, "installer")
+// const appDir = "./vision-win32-x64"
+// const outDir = "./installer"
 
-const msiCreator = new MSICreator({
+const appDir = path.resolve("vision-win32-x64")
+const outDir = path.resolve("installer")
+
+const msiCreator = new msi.default.MSICreator({
   appDirectory: appDir,
   outputDirectory: outDir,
-  description: 'Install Vision',
-  exe: 'vision',
-  name: 'vision',
+  description: 'Install Vision, The Easy and Simple Network Scanning Tool.',
+  exe: 'Vision',
+  name: 'Vision',
   manufacturer: 'Satshree Shrestha',
+  programFilesFolderName:"Vision",
+  shortcutFolderName:"Vision",
+  shortcutName:"Vision",
   version: '0.1.1',
   ui: {
     chooseDirectory: true

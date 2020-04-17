@@ -134,8 +134,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
-                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
+                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin" onclick="scanPort(this)">Port</button>
+                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin" @click="scanOS(ip)">OS</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -175,8 +175,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin btn-flat" onclick="scanPort(this)">Port</button>
-                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin btn-flat" @click="scanOS(ip)">OS</button>
+                                                <button type="button" :ip="ip" class="btn waves-light waves-effect btn-small btn-margin" onclick="scanPort(this)">Port</button>
+                                                <button type="button" style="margin-left:5px;" class="btn waves-light os-btn waves-effect btn-small btn-margin" @click="scanOS(ip)">OS</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -242,7 +242,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            <a href="#!" class="modal-close waves-effect waves-green">Close</a>
         </div>
     </div>
     
@@ -300,11 +300,6 @@
                 if (value) {
                     location.reload()
                 }
-                //if (value) {
-                //    $("#prompt").show()
-                //    $("#resultBox").hide()
-                //    scanning = true
-                //}
             });
         }
     </script>
@@ -318,23 +313,27 @@
             var lastIP = $("#ipLast").val()
 
             if (firstIP && lastIP) {
-                if (!(firstIP.indexOf(".") === -1 || lastIP.indexOf(".") === -1)) {
+                if (
+                    (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP))
+                    &&
+                    (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP))
+                    ) {
                     let first = firstIP.split(".")
                     let last = lastIP.split(".")
 
-                    if ((first[2] !== last[2]) || (first[3] > last[3]) || (firstIP == lastIP)) {
-                        swal({
-                            text:"Invalid IP Range.",
-                            icon:"error"
-                        })
-                    } else {
+                    if ((first[2] == last[2]) && (first[3] < last[3]) && (firstIP !== lastIP)) {
                         let args = ['range', firstIP, lastIP]
-    
+                        
                         $("#prompt").hide()
                         $("#resultBox").show()
                         window.time = new Date()
                         vueObj = initializeScan(args)
                         var scanning = true
+                    } else {
+                        swal({
+                            text:"Invalid IP Range.",
+                            icon:"error"
+                        })
                     }
                 } else {
                     swal({
@@ -356,41 +355,20 @@
             let ip = $("#deviceIp").val()
 
             if (ip) {
-                let args = ['particular', ip]
-                // let firstPort = $("#firstPort").val()
-                // let lastPort = $("#lastPort").val()
-                
-                // if (firstPort && lastPort) {
-                //     if (parseInt(firstPort) > parseInt(lastPort)) {
-                //         swal({
-                //             text:"Invalid port range!",
-                //             icon:"error"
-                //         })
-
-                //         return false   
-                //     } else {
-                //         args.push('port')
-                //         args.push([firstPort, lastPort])
-                //     }
-                // } else {
-                //     if (!(firstPort) && lastPort) {
-                //         swal({
-                //             text:"Invalid port range!",
-                //             icon:"error"
-                //         })
-
-                //         return false
-                //     } else if (firstPort) {
-                //         args.push('port')
-                //         args.push([firstPort])
-                //     } 
-                // }
-
-                $("#prompt").hide()
-                $("#resultBox").show()
-                window.time = new Date()
-                vueObj = initializeScan(args)
-                var scanning = true
+                if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP)) {
+                    let args = ['particular', ip]
+    
+                    $("#prompt").hide()
+                    $("#resultBox").show()
+                    window.time = new Date()
+                    vueObj = initializeScan(args)
+                    var scanning = true
+                } else {
+                    swal({
+                        text:"Invalid IP Address.",
+                        icon:"error"
+                    })
+                }
             } else {
                 swal({
                     text:"Please specify IP Address of the device.",
@@ -406,10 +384,9 @@
             
             if (JSON.parse(reply)) {
                 swal({
-                    text: "Scan Results Saved.",
+                    title: "Scan Results Saved.",
+                    text:"File saved on your desktop.",
                     icon: "success",
-                    buttons:false,
-                    timer:1500
                 })
             } else {
                 swal({

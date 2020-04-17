@@ -53,41 +53,11 @@
     <!-- <script type="text/javascript" src="materialize/js/materialize.js"></script> -->
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
   </body>
-  <script>
-    const swal = require('sweetalert')
-    const remote = require('electron').remote
-    if (process.platform !== "win32") {
-      const isRoot = require('is-root')
-      if (!isRoot()) {
-        swal({
-          text:"Please run 'Vision' as administrator.",
-          icon:"warning"
-        }).then(() => {
-          const w = remote.getCurrentWindow()
-          w.close()
-        })
-      }
-    }
-    const {PythonShell} = require('python-shell')
-    const path = require("path")
-
-    let options = {
-      scriptPath : path.join(__dirname, './engine/')
-    }
-
-    let pyshell = new PythonShell('boot.py', options)
-
-    pyshell.on('message', function(message) {
-      message = JSON.parse(message)
-      document.getElementById("ip").innerHTML = message.ip
-      document.getElementById("gateway").innerHTML = message.gateway
-      pyshell.terminate()
-    })
-      
-  </script>
+  <script src="./boot.js"></script>
   <script>
     $(document).ready(function(){
       $('.tooltipped').tooltip();
     });
+    boot();
   </script>
 </html>

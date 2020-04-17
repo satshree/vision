@@ -11,8 +11,6 @@ autopep8 = "*"
 pylint = "*"
 scapy = "*"
 python-nmap = "*"
-python3-nmap = "*"
-simplejson = "*"
 netifaces = "*"
 
 [requires]

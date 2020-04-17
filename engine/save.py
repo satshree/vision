@@ -1,6 +1,7 @@
 import csv
 import sys
 import json
+import os
 from modules.common import echo_result
 from datetime import datetime
 
@@ -8,9 +9,18 @@ __author__ = "Satshree Shrestha"
 
 if __name__ == "__main__":
     now = datetime.now().strftime("%Y-%B-%d %I:%M:%S %p %A")
+    _dir = os.getcwd().split("\\")
+    for each in _dir:
+        if each is "Desktop":
+            break
+        else:
+            _dir.pop()
+    _dir.append("Desktop")
+    desktop_dir = "\\".join(_dir)
+    file_name = os.path.join(desktop_dir, "vision.csv")
 
     try:
-        with open("vision.csv", "w") as file:
+        with open(file_name, "w") as file:
             pen = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             pen.writerow(['S.N', 'IP Address', 'MAC Address', 'Manufacturer', 'Hostname', 'Operating System', 'Open Ports'])
 
