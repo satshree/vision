@@ -10,7 +10,7 @@ The front end GUI of Vision is built with 'Electron'. The main backend process i
 2. npm  
 3. Follow below mentioned steps to install dependencies.    
 
-## Start
+## Setup
 The installer file is under directory 'exe'.  
   
 Follow following steps to run Vision using npm and Python under directory 'src'.  
