@@ -14,8 +14,6 @@ For development,
 3. Follow below mentioned steps to install dependencies.    
 
 ## Setup
-The installer file is under directory 'exe'.  
-  
 Follow following steps to run Vision using npm and Python under directory 'src'.  
 1. Install dependencies  
     - npm install  
