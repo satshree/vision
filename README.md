@@ -1,7 +1,5 @@
 # Vision
-Scan Your Network for Online Hosts with VISION   
-
-## About
+Scan Your Network for Online Hosts with VISION.  
 Vision will scan your network and list out all the online devices.  
 The front end GUI of Vision is built with 'Electron'. The main backend process is built completely in Python. 
 
