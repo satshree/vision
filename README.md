@@ -14,7 +14,8 @@ For development,
 3. Follow below mentioned steps to install dependencies.    
 
 ## Setup
-Follow following steps to run Vision using npm and Python under directory 'src'.  
+<a href="https://satshree.com.np/files/vision.msi" download>Download installer here.</a>  
+Follow following steps to run Vision using npm and Python.  
 1. Install dependencies  
     - npm install  
     - To install from 'requirements.txt' => pip install -r requirements.txt  
