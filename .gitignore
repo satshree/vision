@@ -6,7 +6,6 @@ log.txt
 vision.csv
 vision-win32-x64/
 installer/
-package-lock.json
 
 ### Node ###
 # Logs
