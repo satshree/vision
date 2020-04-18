@@ -6,7 +6,7 @@ const swal = require('sweetalert')
 function visualize() {
 
     let options = {
-        scriptPath:path.join(__dirname, './engine/')
+        scriptPath:path.join(__dirname, '../engine/')
     }
 
     let script = new PythonShell('monitor.py', options)

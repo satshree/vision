@@ -1,6 +1,6 @@
 const {PythonShell} = require('python-shell')
 const path = require("path")
-window.$ = window.jQuery = require('./js/jquery.js');
+window.$ = window.jQuery = require('../js/jquery.js');
 
 function displayData() {
     var app = new Vue({
@@ -87,7 +87,7 @@ function initializeScan(args) {
     result = new Promise((resolve, reject) => {
         
         var options = {
-            scriptPath : path.join(__dirname, './engine/'),
+            scriptPath : path.join(__dirname, '../engine/'),
             args: args
         }
     
@@ -175,7 +175,7 @@ function displayError(err) {
 function save(result) {
     return new Promise((resolve) => {
         let options = {
-            scriptPath : path.join(__dirname, './engine/'),
+            scriptPath : path.join(__dirname, '../engine/'),
             args: [result]
         }
         let run = new PythonShell('save.py', options)
@@ -206,7 +206,7 @@ $("#scanPortForm").submit(function(event) {
     let ports = $("#ports").val()
 
     let options = {
-        scriptPath : path.join(__dirname, './engine/'),
+        scriptPath : path.join(__dirname, '../engine/'),
         args: [host, "ports", ports]
     }
 

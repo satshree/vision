@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vision</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <!-- <link type="text/css" rel="stylesheet" href="materialize/css/materialize.css"  media="screen,projection"/> -->
-    <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.css"  media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../fontawesome-free/css/all.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../fontawesome-free/css/all.min.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
+    <script>window.$ = window.jQuery = require('../js/jquery.js');</script>
 </head>
 <body>
     <div class="container">
@@ -144,16 +144,16 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn btn-flat">Close</a>
         </div>
     </div>
 
     <!--JavaScript at end of body for optimized loading-->
     <!-- <script type="text/javascript" src="./materialize/js/materialize.js"></script> -->
-    <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
-    <script src="./js/vue.js"></script>
-    <script src="./visualize.js"></script>
-    <script src="./engine.js"></script>
+    <script type="text/javascript" src="../materialize/js/materialize.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/visualize.js"></script>
+    <script src="../js/engine.js"></script>
     <script>
         window.time = new Date()
         
@@ -214,9 +214,6 @@
                 if (value) {
                     location.reload()
                 }
-                //if (value) {
-                //    vueObj = initializeScan(['default'])
-                //}
             });
         }
 
@@ -247,7 +244,7 @@
                 dangerMode:true
             }).then((value) => {
                 if (value) {
-                    window.location.replace("./index.html")
+                    window.location.replace("../index.html")
                 }
             });
         }

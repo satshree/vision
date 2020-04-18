@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vision</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <!-- <link type="text/css" rel="stylesheet" href="materialize/css/materialize.css"  media="screen,projection"/> -->
-    <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css"  media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.css"  media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="./fontawesome-free/css/all.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../fontawesome-free/css/all.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../fontawesome-free/css/all.min.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
 
     <style>
@@ -21,7 +21,7 @@
         }
     </style>
     
-    <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
+    <script>window.$ = window.jQuery = require('../js/jquery.js');</script>
 </head>
 <body>
     <div class="container">
@@ -242,16 +242,16 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green">Close</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn btn-flat">Close</a>
         </div>
     </div>
     
     <!--JavaScript at end of body for optimized loading-->
     <!-- <script type="text/javascript" src="materialize/js/materialize.js"></script> -->
-    <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
-    <script src="./js/vue.js"></script>
-    <script src="./engine.js"></script>
-    <script src="./visualize.js"></script>
+    <script type="text/javascript" src="../materialize/js/materialize.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/engine.js"></script>
+    <script src="../js/visualize.js"></script>
     <script>
         $("#btnIpRange").click(function(event){
             event.preventDefault()
@@ -316,7 +316,7 @@
                 if (
                     (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP))
                     &&
-                    (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP))
+                    (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(lastIP))
                     ) {
                     let first = firstIP.split(".")
                     let last = lastIP.split(".")
@@ -355,7 +355,7 @@
             let ip = $("#deviceIp").val()
 
             if (ip) {
-                if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(firstIP)) {
+                if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
                     let args = ['particular', ip]
     
                     $("#prompt").hide()
@@ -424,11 +424,11 @@
                     dangerMode:true
                 }).then((value) => {
                     if (value) {
-                        window.location.replace("./index.html")
+                        window.location.replace("../index.html")
                     }
                 })
             } catch {
-                window.location.replace("./index.html")
+                window.location.replace("../index.html")
             }
         }
     </script>

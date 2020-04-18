@@ -23,12 +23,14 @@ if __name__ == "__main__":
         ip = systeminfo.get_ip_address()
         gateway = systeminfo.get_default_gateway()
     except:
-        echo_result(json.dumps({
+        print(json.dumps({
             'ip':'Unable to find.',
             'gateway':'Unable to find.'
         }))
+        sys.stdout.flush()
     else:
-        echo_result(json.dumps({
+        print(json.dumps({
             'ip':ip,
             'gateway':gateway
         }))
+        sys.stdout.flush()

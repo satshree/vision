@@ -3,7 +3,7 @@ const {Chart} = require('chart.js')
 function visualize(results) {
 
     let options = {
-        scriptPath:path.join(__dirname, './engine/'),
+        scriptPath:path.join(__dirname, '../engine/'),
         args:[JSON.stringify(results)]
     }
 
