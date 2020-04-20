@@ -29,7 +29,7 @@ function displayData() {
                 $(".os-btn").attr("disabled", "disabled")
 
                 let options = {
-                    scriptPath : path.join(__dirname, './engine/'),
+                    scriptPath : path.join(__dirname, '../engine/'),
                     args: [ip]
                 }
 

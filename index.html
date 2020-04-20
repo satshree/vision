@@ -57,9 +57,9 @@
     $(document).ready(function(){
       $('.tooltipped').tooltip();
     });
-    const spawn = require('child_process').spawn
+    const child_process = require('child_process')
     const remote = require('electron').remote
-    const pyshell = spawn("python", [".\\engine\\boot.py"]);
+    const pyshell = child_process.spawn("python", [".\\engine\\boot.py"]);
 
     pyshell.on('error', (err) => {
       // console.log(err)
@@ -72,12 +72,37 @@
         w.close()
       })
     })
-    //pyshell.stderr.on('data', (err) => console.log("ERROR", String.fromCharCode.apply(null, err)))
+
+    pyshell.stderr.on('data', (err) => {
+      //console.log("ERROR", String.fromCharCode.apply(null, err))
+      const {PythonShell} = require('python-shell')
+      const path = require("path")
+      let options = {
+        scriptPath : path.join(__dirname, './engine/'),
+      }
+      
+      bootScript = new PythonShell('boot.py', options)
+
+      bootScript.on('message', (message) => {
+        boot(JSON.parse(message))
+        bootScript.terminate()
+      })
+    })
 
     window.first = false
     pyshell.stdout.on('data', (message) => {
       message = JSON.parse(message)
       //console.log(message)
+      boot(message)
+
+      if (process.platform == "win32") {
+        child_process.exec('taskkill /pid ' + pyshell.pid + ' /T /F')
+      } else {
+        child_process.kill()
+      }
+    })
+
+    function boot(message) {
       if (message == "INSTALL") {
         window.first = true
         swal({
@@ -99,6 +124,6 @@
         document.getElementById("ip").innerHTML = message.ip
         document.getElementById("gateway").innerHTML = message.gateway
       }
-    })
+    }
   </script>
 </html>

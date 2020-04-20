@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "electron .",
+    "build":"electron-packager .",
+    "build-o":"electron-packager . --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Satshree Shrestha",

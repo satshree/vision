@@ -17,7 +17,7 @@ const msiCreator = new msi.default.MSICreator({
   programFilesFolderName:"Vision",
   shortcutFolderName:"Vision",
   shortcutName:"Vision",
-  version: '0.1.1',
+  version: '1.0.0',
   ui: {
     chooseDirectory: true
   },
