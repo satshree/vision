@@ -3,17 +3,25 @@ import subprocess
 import sys
 __author__ = "Satshree Shrestha"
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def check_dependencies():
-    try:
-        import scapy 
-        import netifaces 
-        import nmap 
-    except ModuleNotFoundError:
-        print(json.dumps("INSTALL"))
-        sys.stdout.flush()
-        subprocess.check_output(["pip", "install", "scapy"])
-        subprocess.check_output(["pip", "install", "netifaces"])
-        subprocess.check_output(["pip", "install", "python-nmap"])
+    while True:
+        try:
+            import scapy 
+            import netifaces 
+            import nmap 
+        except ModuleNotFoundError as e:
+            print(json.dumps("Installing Python module '{}' ... ".format(e.name)))
+            # sys.stdout.flush()
+            install(e.name)
+        else:
+            break
+
+def install(module):
+    a=subprocess.check_call(["pip", "install", module])
+    return
 
 if __name__ == "__main__":
     try:

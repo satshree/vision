@@ -57,6 +57,7 @@
     $(document).ready(function(){
       $('.tooltipped').tooltip();
     });
+    let swal = require("sweetalert")
     const child_process = require('child_process')
     const remote = require('electron').remote
     const pyshell = child_process.spawn("python", [".\\engine\\boot.py"]);
@@ -84,6 +85,7 @@
       bootScript = new PythonShell('boot.py', options)
 
       bootScript.on('message', (message) => {
+        //console.log("HERE", message)
         boot(JSON.parse(message))
         bootScript.terminate()
       })
@@ -92,7 +94,6 @@
     window.first = false
     pyshell.stdout.on('data', (message) => {
       message = JSON.parse(message)
-      //console.log(message)
       boot(message)
 
       if (process.platform == "win32") {
@@ -103,11 +104,12 @@
     })
 
     function boot(message) {
-      if (message == "INSTALL") {
+      //console.log(message)
+      if (!message.ip) {
         window.first = true
         swal({
           title:"Setting up Vision!",
-          text:"Installing few required python modules.",
+          text:message,
           icon:"./assets/loading.gif",
           buttons:false
         })

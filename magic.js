@@ -72,7 +72,7 @@ function createWindow() {
     }))
 
     // if (!isMac) {
-    win.removeMenu()
+    // win.removeMenu()
     // }
 }
 
