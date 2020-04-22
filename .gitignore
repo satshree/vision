@@ -4,6 +4,8 @@
 
 log.txt
 vision.csv
+vision-win32-x64/
+installer/
 
 ### Node ###
 # Logs
@@ -111,6 +113,10 @@ dist/
 tmp/
 temp/
 
+<<<<<<< HEAD
+=======
+# End of https://www.gitignore.io/api/node
+>>>>>>> d5ec634cb3138279fe2266bfe6e987d4c6fb399a
 
 ### Code ###
 .vscode
@@ -222,7 +228,7 @@ target/
 #   However, in case of collaboration, if having platform-specific dependencies or dependencies
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
-#Pipfile.lock
+Pipfile.lock
 
 # celery beat schedule file
 celerybeat-schedule
@@ -271,7 +277,7 @@ $RECYCLE.BIN/
 
 # Windows Installer files
 *.cab
-*.msi
+# *.msi
 *.msix
 *.msm
 *.msp

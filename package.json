@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "start": "electron .",
+    "build":"electron-packager .",
+    "build-o":"electron-packager . --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Satshree Shrestha",
   "license": "ISC",
   "dependencies": {
     "chart.js": "^2.9.3",
-    "is-root": "^2.1.0",
+    "child_process": "^1.0.2",
     "path": "^0.12.7",
     "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2"

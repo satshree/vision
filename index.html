@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> Vision </title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
@@ -28,9 +28,9 @@
         </div>
         <hr>
         <div class="contents center">
-          <a href="./default.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Vision will scan everything for you."> Let Vision Do The Dirty Work. </button> </a>
-          <a href="./custom.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Tell Vision how to scan the network."> Scan The Network Yourself. </button> </a>
-          <!-- <a href="./live.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Monitor live HTTP/HTTPS Requests."> Monitor Your Internet Traffic. </button> </a> -->
+          <a href="./templates/default.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Vision will scan everything for you."> Let Vision Do The Dirty Work. </button> </a>
+          <a href="./templates/custom.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Tell Vision how to scan the network."> Scan The Network Yourself. </button> </a>
+          <!-- <a href="./templates/live.html"> <button class="waves-effect waves-light btn home-btn tooltipped" data-tooltip="Monitor live HTTP/HTTPS Requests."> Monitor Your Internet Traffic. </button> </a> -->
         </div>
         <div style="padding:0 100px;" class="center">
           <strong> Your IP Address: </strong><i id="ip"> ... </i> <br>
@@ -42,9 +42,9 @@
           <p align="center">
             Vision scans your network for online devices.
             <br>
-            <small>
+            <!-- <small>
               Vision was started back in June of 2019 – developed by Satshree Shrestha.
-            </small>
+            </small> -->
           </p>
         </div>
       </div>
@@ -54,40 +54,78 @@
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
   </body>
   <script>
-    const swal = require('sweetalert')
-    const remote = require('electron').remote
-    if (process.platform !== "win32") {
-      const isRoot = require('is-root')
-      if (!isRoot()) {
-        swal({
-          text:"Please run 'Vision' as administrator.",
-          icon:"warning"
-        }).then(() => {
-          const w = remote.getCurrentWindow()
-          w.close()
-        })
-      }
-    }
-    const {PythonShell} = require('python-shell')
-    const path = require("path")
-
-    let options = {
-      scriptPath : path.join(__dirname, './engine/')
-    }
-
-    let pyshell = new PythonShell('boot.py', options)
-
-    pyshell.on('message', function(message) {
-      message = JSON.parse(message)
-      document.getElementById("ip").innerHTML = message.ip
-      document.getElementById("gateway").innerHTML = message.gateway
-      pyshell.terminate()
-    })
-      
-  </script>
-  <script>
     $(document).ready(function(){
       $('.tooltipped').tooltip();
     });
+    let swal = require("sweetalert")
+    const child_process = require('child_process')
+    const remote = require('electron').remote
+    const pyshell = child_process.spawn("python", [".\\engine\\boot.py"]);
+
+    pyshell.on('error', (err) => {
+      // console.log(err)
+      swal({
+        title:"Seems like you have not installed Python!",
+        text:"Please install Python to proceed.",
+        icon:"warning"
+      }).then(() => {
+        const w = remote.getCurrentWindow()
+        w.close()
+      })
+    })
+
+    pyshell.stderr.on('data', (err) => {
+      //console.log("ERROR", String.fromCharCode.apply(null, err))
+      const {PythonShell} = require('python-shell')
+      const path = require("path")
+      let options = {
+        scriptPath : path.join(__dirname, './engine/'),
+      }
+      
+      bootScript = new PythonShell('boot.py', options)
+
+      bootScript.on('message', (message) => {
+        //console.log("HERE", message)
+        boot(JSON.parse(message))
+        bootScript.terminate()
+      })
+    })
+
+    window.first = false
+    pyshell.stdout.on('data', (message) => {
+      message = JSON.parse(message)
+      boot(message)
+
+      if (process.platform == "win32") {
+        child_process.exec('taskkill /pid ' + pyshell.pid + ' /T /F')
+      } else {
+        child_process.kill()
+      }
+    })
+
+    function boot(message) {
+      //console.log(message)
+      if (!message.ip) {
+        window.first = true
+        swal({
+          title:"Setting up Vision!",
+          text:message,
+          icon:"./assets/loading.gif",
+          buttons:false
+        })
+      } else {
+        if (window.first) {
+          swal({
+            title:"You are good to go!",
+            text:" ",
+            icon:"success",
+            buttons:false,
+            timer:2000
+          })
+        }
+        document.getElementById("ip").innerHTML = message.ip
+        document.getElementById("gateway").innerHTML = message.gateway
+      }
+    }
   </script>
 </html>

@@ -1,18 +1,6 @@
 const {PythonShell} = require('python-shell')
 const path = require("path")
-window.$ = window.jQuery = require('./js/jquery.js');
-
-// const loader = `<div class="preloader-wrapper big active">
-// <div class="spinner-layer spinner-blue-only">
-//   <div class="circle-clipper left">
-//     <div class="circle"></div>
-//   </div><div class="gap-patch">
-//     <div class="circle"></div>
-//   </div><div class="circle-clipper right">
-//     <div class="circle"></div>
-//   </div>
-// </div>
-// </div>`
+window.$ = window.jQuery = require('../js/jquery.js');
 
 function displayData() {
     var app = new Vue({
@@ -41,7 +29,7 @@ function displayData() {
                 $(".os-btn").attr("disabled", "disabled")
 
                 let options = {
-                    scriptPath : path.join(__dirname, './engine/'),
+                    scriptPath : path.join(__dirname, '../engine/'),
                     args: [ip]
                 }
 
@@ -99,7 +87,7 @@ function initializeScan(args) {
     result = new Promise((resolve, reject) => {
         
         var options = {
-            scriptPath : path.join(__dirname, './engine/'),
+            scriptPath : path.join(__dirname, '../engine/'),
             args: args
         }
     
@@ -187,7 +175,7 @@ function displayError(err) {
 function save(result) {
     return new Promise((resolve) => {
         let options = {
-            scriptPath : path.join(__dirname, './engine/'),
+            scriptPath : path.join(__dirname, '../engine/'),
             args: [result]
         }
         let run = new PythonShell('save.py', options)
@@ -218,8 +206,8 @@ $("#scanPortForm").submit(function(event) {
     let ports = $("#ports").val()
 
     let options = {
-        scriptPath : path.join(__dirname, './engine/'),
-        args: [host, ports]
+        scriptPath : path.join(__dirname, '../engine/'),
+        args: [host, "ports", ports]
     }
 
     let portScript = new PythonShell("port.py", options)
