@@ -9,14 +9,7 @@ __author__ = "Satshree Shrestha"
 
 if __name__ == "__main__":
     now = datetime.now().strftime("%Y-%B-%d %I:%M:%S %p %A")
-    _dir = os.getcwd().split("\\")
-    for each in _dir:
-        if each is "Desktop":
-            break
-        else:
-            _dir.pop()
-    _dir.append("Desktop")
-    desktop_dir = "\\".join(_dir)
+    desktop_dir = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') 
     file_name = os.path.join(desktop_dir, "vision.csv")
 
     try:
