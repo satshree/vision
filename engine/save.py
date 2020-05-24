@@ -13,7 +13,7 @@ if __name__ == "__main__":
     file_name = os.path.join(desktop_dir, "vision.csv")
 
     try:
-        with open(file_name, "w") as file:
+        with open(file_name, "w", encoding='utf-8') as file:
             pen = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             pen.writerow(['S.N', 'IP Address', 'MAC Address', 'Manufacturer', 'Hostname', 'Operating System', 'Open Ports'])
 
