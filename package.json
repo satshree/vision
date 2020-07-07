@@ -20,7 +20,7 @@
     "sweetalert": "^2.1.2"
   },
   "devDependencies": {
-    "electron": "^8.0.0",
+    "electron": "^8.2.4",
     "electron-wix-msi": "^2.2.0"
   }
 }
