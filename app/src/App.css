@@ -1,0 +1,11 @@
+.app {
+  text-align: center;
+  background-color: #fffed2;
+}
+
+.vertical-center {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+}

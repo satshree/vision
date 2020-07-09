@@ -2,10 +2,25 @@
 # Created by https://www.gitignore.io/api/code,macos,python,windows
 # Edit at https://www.gitignore.io/?templates=code,macos,python,windows
 
+trash
 log.txt
 vision.csv
 vision-win32-x64/
 installer/
+
+# dependencies
+/.pnp
+.pnp.js
+
+# production
+/build
+
+# misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 
 ### Node ###
 # Logs
@@ -113,10 +128,7 @@ dist/
 tmp/
 temp/
 
-<<<<<<< HEAD
-=======
 # End of https://www.gitignore.io/api/node
->>>>>>> d5ec634cb3138279fe2266bfe6e987d4c6fb399a
 
 ### Code ###
 .vscode
