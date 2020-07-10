@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Default from './pages/Default'
 import Custom from './pages/Custom'
+import Results from './pages/Results'
 
 import './App.css';
 
@@ -15,10 +16,13 @@ class App extends Component {
         <Route exact path="/" render={() => <Home />}></Route>
 
         {/* Default Scan */}
-        <Route exact path="/default" render={() => <Default />}></Route>
+        <Route path="/default" render={() => <Default />}></Route>
 
         {/* Custom Scan */}
-        <Route exact path="/custom" render={() => <Custom />}></Route>
+        <Route path="/custom" render={() => <Custom />}></Route>
+
+        {/* Results */}
+        <Route path="/results" render={() => <Results />}></Route>
       </BrowserRouter>
     );
   }
