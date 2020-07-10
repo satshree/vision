@@ -9,7 +9,7 @@ class Options extends Component {
                 <br></br>
                 <div className="container text-center">
                     <OverlayTrigger
-                        key='bottom'
+                        key='default'
                         placement='bottom'
                         overlay={
                             <Tooltip id="tooltip-default">
@@ -20,7 +20,7 @@ class Options extends Component {
                         <Button href="/default" variant="info" style={{ marginRight: "5px" }}>Let Vision Do The Dirty Work</Button>
                     </OverlayTrigger>
                     <OverlayTrigger
-                        key='bottom'
+                        key='custom'
                         placement='bottom'
                         overlay={
                             <Tooltip id="tooltip-custom">
