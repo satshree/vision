@@ -112,7 +112,7 @@ class Custom extends Component {
                     <div className="container">
                         <div style={{ marginBottom: '3em' }}>
                             <span style={titleFont}>
-                                Custom Scan
+                                Vision Custom Scan
                                 </span>
                             <hr></hr>
                         </div>
@@ -128,5 +128,5 @@ export default Custom
 
 const titleFont = {
     fontWeight: 450,
-    fontSize: '35px'
+    fontSize: '32px'
 }

@@ -1,4 +1,14 @@
 .nav-link {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
     margin-right: 2em;
+}
+
+.scan-data {
+    padding-top: 5px;
+    padding-right: 5rem;
+    padding-left: 5rem;
+}
+
+.results {
+    height: 410px;
 }

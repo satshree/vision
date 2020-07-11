@@ -42,7 +42,7 @@ class Default extends Component {
                     <div className="container">
                         <div style={{marginBottom:'5em'}}>
                             <span style={titleFont}>
-                                Default Scan
+                                Vision Default Scan
                             </span>
                         </div>
                         <div className="vertical-center justify-content-center" style={{ minHeight: 0 }}>
@@ -69,5 +69,5 @@ export default Default
 
 const titleFont = {
     fontWeight: 450,
-    fontSize:'35px'
+    fontSize:'32px'
 }

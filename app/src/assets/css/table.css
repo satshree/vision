@@ -1,0 +1,26 @@
+.fixed-header{
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+table {
+    width:100%;
+}
+
+.fixed-header tbody{
+  display:block;
+  width: 100%;
+  overflow: auto;
+  height: 250px;
+}
+
+.fixed-header thead tr {
+   display: block;
+}
+
+.fixed-header th, .fixed-header td {
+  /* padding: 5px; */
+  text-align: center;
+  width: 15%;
+}

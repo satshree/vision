@@ -1,19 +1,44 @@
 import React, { Component } from 'react'
-import { Tabs, Tab } from 'react-bootstrap'
+import { Tabs, Tab, Button } from 'react-bootstrap'
+import swal from 'sweetalert'
 
-import Head from '../components/Head'
 import Graphs from '../components/Graphs'
+import TableView from '../components/Table'
 
 import '../assets/css/nav-pills.css'
 import '../assets/css/results.css'
 
 class Results extends Component {
-    render() {
-        var data = {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    returnHome = () => {
+        swal({
+            title: "Discard Results?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                window.location.href = "/"
+            }
+        })
+    }
+
+    getData() {
+        return {
+            labels: ['Apple', 'Dell', 'Samsung', 'Cisco'],
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                label: 'Total Devices',
+                data: [3, 4, 2, 1],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -33,24 +58,40 @@ class Results extends Component {
                 borderWidth: 1
             }]
         }
+    }
 
+    render() {
         return (
             <React.Fragment>
-                <br></br>
-                <br></br>
-                <div className="container">
-                    <Head />
-                    <hr></hr>
-                    <br></br>
-                    <div className="tabs">
-                        <Tabs defaultActiveKey="graph" className="d-flex justify-content-center" variant="pills" id="uncontrolled-tab">
-                            <Tab eventKey="graph" title="Graphical View">
-                                <Graphs data={data} />
-                            </Tab>
-                            <Tab eventKey="table" title="Tabular View">
-                                TABLE
-                            </Tab>
-                        </Tabs>
+                <div class="vertical-center">
+                    <div className="container">
+                        <div className="title">
+                            <span style={{ fontSize: '32px' }}>Vision Scan Results</span>
+                        </div>
+                        <div className="results">
+                            <hr></hr>
+                            <div className="tabs">
+                                <Tabs defaultActiveKey="graph" className="d-flex justify-content-center" variant="pills" id="uncontrolled-tab">
+                                    <Tab eventKey="graph" title="Graphical View">
+                                        <Graphs data={this.getData()} />
+                                    </Tab>
+                                    <Tab eventKey="table" title="Tabular View">
+                                        <TableView />
+                                    </Tab>
+                                </Tabs>
+                            </div>
+                        </div>
+                        <div className="scan-data">
+                            <hr></hr>
+                            <small>Total Time Taken for scan: <strong>55 seconds</strong></small>
+                            {' | '}
+                            <small>Total Devices Scanned: <strong>13</strong></small>
+                        </div>
+                        <hr></hr>
+                        <div className="btns">
+                            <Button variant="info" onClick={this.returnHome}>Home</Button>
+                            <Button variant="success">Save</Button>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>

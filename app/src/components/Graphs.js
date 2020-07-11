@@ -1,16 +1,32 @@
 import React, { Component } from 'react'
-import { Bar } from 'react-chartjs-2'
+import { HorizontalBar } from 'react-chartjs-2'
 
 class Graphs extends Component {
+    getChartOptions() {
+        return {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                }]
+            },
+            legend: {
+                display: false
+            },
+            maintainAspectRatio: true,
+            responsive: true
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
-                <br></br>
-                <Bar
+                <HorizontalBar
                     data={this.props.data}
-                    width={100}
-                    height={300}
-                    options={{ maintainAspectRatio: false }}
+                    width={50}
+                    height={15}
+                    options={this.getChartOptions()}
                 />
             </React.Fragment>
         )
