@@ -8,7 +8,6 @@ pylint = "*"
 autopep8 = "*"
 
 [packages]
-pylint = "*"
 scapy = "*"
 python-nmap = "*"
 netifaces = "*"

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Tabs, Tab, Button } from 'react-bootstrap'
 import swal from 'sweetalert'
+import { connect } from 'react-redux'
 
 import Graphs from '../components/Graphs'
 import TableView from '../components/Table'
@@ -34,6 +35,9 @@ class Results extends Component {
     }
 
     getData() {
+        console.log("RESULTS")
+        console.log(this.props)
+
         return {
             labels: ['Apple', 'Dell', 'Samsung', 'Cisco'],
             datasets: [{
@@ -63,7 +67,7 @@ class Results extends Component {
     render() {
         return (
             <React.Fragment>
-                <div class="vertical-center">
+                <div className="vertical-center">
                     <div className="container">
                         <div className="title">
                             <span style={{ fontSize: '32px' }}>Vision Scan Results</span>
@@ -76,7 +80,7 @@ class Results extends Component {
                                         <Graphs data={this.getData()} />
                                     </Tab>
                                     <Tab eventKey="table" title="Tabular View">
-                                        <TableView />
+                                        <TableView data={this.getData()}/>
                                     </Tab>
                                 </Tabs>
                             </div>
@@ -99,4 +103,8 @@ class Results extends Component {
     }
 }
 
-export default Results
+const mapStateToProps = (state) => ({
+    results: state
+})
+
+export default connect(mapStateToProps, {})(Results)

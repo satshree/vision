@@ -36,34 +36,6 @@ class TableView extends Component {
                                     </DropdownButton>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>192.168.1.1</td>
-                                <td>AB:DC:FE:GE:DV:SD</td>
-                                <td>Apple</td>
-                                <td>iPhone</td>
-                                <td>iOS</td>
-                                <td>34635</td>
-                                <td>
-                                    <DropdownButton variant="warning" title="Scan">
-                                        <Dropdown.Item as="button">Port</Dropdown.Item>
-                                        <Dropdown.Item as="button">Operating System</Dropdown.Item>
-                                    </DropdownButton>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>192.168.1.1</td>
-                                <td>AB:DC:FE:GE:DV:SD</td>
-                                <td>Apple</td>
-                                <td>iPhone</td>
-                                <td>iOS</td>
-                                <td>34635</td>
-                                <td>
-                                    <DropdownButton variant="warning" title="Scan">
-                                        <Dropdown.Item as="button">Port</Dropdown.Item>
-                                        <Dropdown.Item as="button">Operating System</Dropdown.Item>
-                                    </DropdownButton>
-                                </td>
-                            </tr>
                         </tbody>
                     </Table>
                 </div>

@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
 import { Spinner, Button } from 'react-bootstrap'
+import { connect } from 'react-redux'
 import swal from 'sweetalert'
 
+import { scanNetwork } from '../actions'
+
+const { ipcRenderer } = window.require('electron')
+
+
 class Default extends Component {
+    state = {
+        message: "Initiating scan ..."
+    }
+
     getStatus() {
         return (
             <React.Fragment>
-                Scanning Host: 192.168.1.1 | Scan Attempt: 2
+                {this.state.message}
             </React.Fragment>
         )
     }
@@ -35,12 +45,40 @@ class Default extends Component {
         })
     }
 
+    componentDidMount() {
+        ipcRenderer.send('NETWORK', ["default"])
+        ipcRenderer.on('NETWORK', (e, resp) => {
+            // console.log('here', resp)
+            if (resp === "ERR") {
+                swal({
+                    title: "Something went wrong.",
+                    text: "Please try again.",
+                    icon: "error"
+                }).then(() => window.location.href = "/")
+            } else {
+                if (resp.indexOf("Scanning") === -1) {
+                    this.setState({ message: "Scan Complete. Please Wait ..." })
+
+                    let results = JSON.parse(resp)
+                    console.log("DEFAULT")
+                    console.log(results)
+
+                    this.props.scanNetwork(results)
+
+                    // setTimeout(1100, window.location.href = "/results")
+                } else {
+                    this.setState({ message: resp })
+                }
+            }
+        });
+    }
+
     render() {
         return (
             <React.Fragment>
                 <div className="vertical-center">
                     <div className="container">
-                        <div style={{marginBottom:'5em'}}>
+                        <div style={{ marginBottom: '5em' }}>
                             <span style={titleFont}>
                                 Vision Default Scan
                             </span>
@@ -65,9 +103,10 @@ class Default extends Component {
     }
 }
 
-export default Default
 
 const titleFont = {
     fontWeight: 450,
-    fontSize:'32px'
+    fontSize: '32px'
 }
+
+export default connect(null, { scanNetwork })(Default)

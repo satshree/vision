@@ -1,0 +1,3 @@
+pyinstaller -y -F --add-data "./modules/common.py";"." --add-data "./modules/database.txt";"." --add-data "./modules/hostinfo.py";"." --add-data "./modules/resources.py";"." --add-data "./modules/systeminfo.py";"." --hidden-import scapy --hidden-import python-nmap --hidden-import netifaces "networkscan.py"
+
+pyinstaller -y -F "networkscan.py" --hidden-import="scapy" --hidden-import="python-nmap" --hidden-import="netifaces" --hidden-import="csv" 

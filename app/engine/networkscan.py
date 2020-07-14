@@ -5,13 +5,14 @@ import os
 from scapy.all import IP, TCP, ARP, Ether, srp, sr1
 from modules import systeminfo, resources, hostinfo
 from modules.common import echo_result
-from port import scan_port
 
 __author__ = "Satshree Shrestha"
 
-current_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), sys.argv[0])
+# current_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), sys.argv[0])
 
-### CLASS
+# CLASS
+
+
 class NetworkScan:
     def __init__(self, ip_range=[], ip=None):
         # Initialize required variables.
@@ -21,7 +22,8 @@ class NetworkScan:
         else:
             self.ip = ip
         self.hosts = {}
-        self.gateway = '.'.join(self.break_ip(systeminfo.get_default_gateway(), subnet=True))
+        self.gateway = '.'.join(self.break_ip(
+            systeminfo.get_default_gateway(), subnet=True))
         self.empty_subnet_counter = 0
 
     def break_ip(self, IP, subnet=False):
@@ -63,7 +65,7 @@ class NetworkScan:
     def count_empty_subnet(self):
         """ Count empty subnet. """
         self.empty_subnet_counter += 1
-    
+
     def reset_subnet_counter(self):
         """ Reset subnet counter. """
         self.empty_subnet_counter = 0
@@ -89,8 +91,14 @@ class NetworkScan:
         # Catch online hosts
         for element in answered:
             # 'psrc' refers to IP address | 'hwsrc' refers to MAC address.
-            self.hosts[element[1].psrc] = {'MAC': element[1].hwsrc.upper(), "OS":"", "Ports":[]}
-        
+            ip = element[1].psrc
+            mac = element[1].hwsrc.upper()
+
+            # OBJECT | DICTIONARY
+            self.hosts[ip] = {
+                'MAC': mac, "OS": "", "Ports": []}
+
+
         return len(answered)
 
     def vendor(self):
@@ -102,31 +110,51 @@ class NetworkScan:
         for host in self.hosts:
             mac = self.hosts[host]['MAC']
             self.hosts[host]['Vendor'] = oui.get(mac[:8])
-    
+
     def hostname(self):
         """ Set Hostname of the device. """
 
         for ip in self.hosts.keys():
             hostname = hostinfo.identify_hostname(ip)
             self.hosts[ip]['Hostname'] = hostname
+    
+    def get_host_lists(self):
+        """ Return all the hosts in list format. """
+
+        host_list = []
+
+        for host, meta in self.all_hosts.items():
+            host_list.append({
+                'IP': host,
+                'MAC': meta['MAC'], 
+                "Vendor": meta["Vendor"],
+                "Hostname": meta["Hostname"],
+                "OS": "", 
+                "Ports": []
+            })
+
+        return host_list
 
     @property
     def all_hosts(self):
         """ Return all the hosts. """
         return self.hosts
 
-### FUNCTION
+
+# FUNCTION
+
+
 def main():
     """ Main module. """
     echo_result("Scanning your network ...")
-    
+
     if 'default' in sys.argv:
         # Initialize network scanner.
         net = NetworkScan()
 
         while True:
             total_hosts = 0
-            
+
             # Break loop if more than 2 subnets are found empty.
             if net.empty_subnet_counter == 2:
                 break
@@ -140,7 +168,8 @@ def main():
                 total_hosts += hosts
 
                 # Send status to Electron.
-                echo_result("Scanning Subnet: {} | Scan Attempt: {} | Replies Caught: {}".format(net.gateway, (i+1), hosts))
+                echo_result("Scanning Subnet: {} | Scan Attempt: {} | Replies Caught: {}".format(
+                    net.gateway, (i+1), hosts))
 
             if total_hosts == 0:
                 # Count empty subnet.
@@ -148,14 +177,14 @@ def main():
             else:
                 # Reset counter if next subnet is not empty.
                 net.reset_subnet_counter()
-            
+
             net.update_gateway()
-           
+
     elif 'range' in sys.argv:
         # Initialize IP range.
         ip_range = []
         for ip in sys.argv:
-            if ip not in (current_file_path, 'main.py', 'range'):
+            if ip not in ('range'):
                 ip_range.append(ip)
 
         # Initialize network scanner.
@@ -181,13 +210,14 @@ def main():
                 break
 
             # Send status to Electron.
-            echo_result("Scanning Host: {} | {} of {} devices,{}".format(net.ip, progress, total_ip, total_progress))
+            echo_result("Scanning Host: {} | {} of {} devices,{}".format(
+                net.ip, progress, total_ip, total_progress))
 
             # Scan the network.
             net.scan()
 
             # Update IP address.
-            net.update_ip()      
+            net.update_ip()
 
     elif 'particular' in sys.argv:
         ip = sys.argv[-1]
@@ -201,11 +231,13 @@ def main():
     # Get vendor names, hostnames and operating system.
     net.vendor()
     net.hostname()
-    hosts = net.all_hosts
-    
+    hosts = net.get_host_lists()
+
     # Give out results to Electron.
     echo_result(json.dumps(hosts))
 
-### MAIN
+
+# MAIN
 if __name__ == "__main__":
     main()
+    sys.exit(0)
