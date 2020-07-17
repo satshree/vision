@@ -3,17 +3,31 @@ import React, { Component } from 'react';
 import Head from '../components/Head'
 import Options from '../components/Options'
 
+const { ipcRenderer } = window.require('electron')
+
 class Home extends Component {
     
-    getSystemIP() {
-        // var os = require('os')
-        // let ifaces = os.networkInterfaces();
-        
-        // Object.keys(ifaces).forEach(function (ifname) {
-        //     console.log("here", ifname)
-        // })
+    state = {
+        ip:"...",
+        gateway:"..."
+    }
 
-        // return ifaces.toString();
+    componentWillMount() {
+        this.getSystemIP()
+    }
+    
+    getSystemIP = async () => {
+        const ip = await ipcRenderer.invoke('SYSTEM_IP')
+        console.log("HJEREE", ip)
+        this.setState(ip)
+    }
+
+    getIP = () => {
+        return this.state.ip
+    }
+
+    getGateway = () => {
+        return this.state.gateway
     }
 
     render() {
@@ -27,11 +41,11 @@ class Home extends Component {
                         <br></br>
                         <div className="text-center" style={{marginTop:'50px'}}>
                             <em>
-                                Your IP Address: 192.168.1.10
+                                Your IP Address: { this.getIP() }
                             </em>
                             <br></br>
                             <em>
-                                Your Gateway Address: 192.168.1.1
+                                Your Gateway Address: { this.getGateway() }
                             </em>
                         </div>
                         <div className="container" style={box}>

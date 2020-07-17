@@ -70,3 +70,51 @@ function runEngine(file, args, channel) {
         // win.webContents.send('RESULT', String.fromCharCode.apply(null, data))
     })
 }
+
+ipcMain.handle('SYSTEM_IP', async (event) => {
+    let network = require('network')
+
+    let ip = await getIP(network)
+    let gateway = await getGatewayIP(network)
+
+    // console.log({ ip, gateway })
+    return { ip, gateway }
+
+    
+    // let os = require('os')
+    // let ifaces = os.networkInterfaces();
+    // // console.log(ifaces)
+
+    // let ignoreIface = ["lo", "eth0"]
+    // Object.keys(ifaces).forEach(function (ifname) {
+    //     // console.log("here", ifname)
+    //     let iface = ifaces[ifname]
+    //     if (ignoreIface.indexOf(ifname) === -1) {
+    //         iface.forEach(function(ifn){
+    //             if(ifn.family === "IPv4" && !ifn.internal) {
+    //                 event.returnValue = ifn.address
+    //             }
+    //         })
+    //     }
+    // })
+})
+
+function getIP(network) {
+    return new Promise((resolve) => {
+        network.get_private_ip(function(err, ip) {
+            // console.log("ERR", err)
+            // console.log("IP", ip)
+            resolve(err || ip)
+        })
+    })
+}
+
+function getGatewayIP(network){
+    return new Promise((resolve) => {
+        network.get_gateway_ip(function(err, ip) {
+            // console.log("gERR", err)
+            // console.log("gIP", ip)
+            resolve(err || ip)
+        })
+    })
+}
