@@ -10,10 +10,25 @@ export const scanNetwork = (results) => dispatch => {
     
 }
 
+export const setModeNull = () => dispatch => {
+    dispatch({
+        type: SET_MODE,
+        mode: { mode: null, subMode:null }
+    })
+}
+
 export const setModeDefault = () => dispatch => {
     dispatch({
         type: SET_MODE,
-        mode: { mode: "DEFAULT" }
+        mode: { mode: "DEFAULT", subMode:null }
+    })
+}
+
+export const setModeCustom = () => dispatch => {
+    dispatch({
+        type: SET_MODE,
+        mode: { mode: "CUSTOM", subMode: null }
+
     })
 }
 
@@ -30,5 +45,12 @@ export const setModeCustomOnly = () => dispatch => {
         type: SET_MODE,
         mode: { mode: "CUSTOM", subMode: "Only" }
 
+    })
+}
+
+export const setModeComplete = () => dispatch => {
+    dispatch({
+        type: SET_MODE,
+        mode: { mode: "COMPLETE", subMode:null }
     })
 }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Button, Tab, Nav, Row, Col, ProgressBar } from 'react-bootstrap'
+import { connect } from 'react-redux'
 import swal from 'sweetalert'
+
+import { setModeNull } from '../actions'
 
 import Range from '../components/RangeForm'
 import Particular from '../components/ParticularForm'
@@ -97,7 +100,7 @@ class Custom extends Component {
                     </Tab.Container>
                     <br></br>
                     <div className="btns" style={{ marginTop: '1em' }}>
-                        <Button href="/" variant="info" style={{ marginRight: '1em' }}>Back</Button>
+                        <Button onClick={ this.props.setModeNull } variant="info" style={{ marginRight: '1em' }}>Back</Button>
                         <Button type="button" variant="success" onClick={() => { this.setState({ input: !this.state.input, key: this.state.key }) }}>Scan</Button>
                     </div>
                 </div>
@@ -124,7 +127,7 @@ class Custom extends Component {
     }
 }
 
-export default Custom
+export default connect(null, { setModeNull })(Custom)
 
 const titleFont = {
     fontWeight: 450,

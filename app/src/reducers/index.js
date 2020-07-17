@@ -5,11 +5,16 @@ function resultReducer(state = {}, action) {
     switch(action.type) {
         case NETWORK_SCAN:
             let resultData = action.results
-            console.log("REDUCER")
-            console.log(resultData)
             return {
                 results: resultData
             }
+        default:
+            return state
+    }
+}
+
+function modeReducer(state={mode:null, subMode:null}, action) {
+    switch(action.type) {
         case SET_MODE:
             return action.mode
         default:
@@ -18,5 +23,6 @@ function resultReducer(state = {}, action) {
 }
 
 export default combineReducers({
-    data: resultReducer
+    data: resultReducer,
+    scanMode: modeReducer
 })

@@ -3,7 +3,7 @@ import { Spinner, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import swal from 'sweetalert'
 
-import { scanNetwork } from '../actions'
+import { scanNetwork, setModeNull, setModeComplete } from '../actions'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -40,7 +40,7 @@ class Default extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                window.location.href = "/"
+                this.props.setModeNull()
             }
         })
     }
@@ -54,7 +54,7 @@ class Default extends Component {
                     title: "Something went wrong.",
                     text: "Please try again.",
                     icon: "error"
-                }).then(() => window.location.href = "/")
+                }).then(() => this.props.setModeNull())
             } else {
                 if (resp.indexOf("Scanning") === -1) {
                     this.setState({ message: "Scan Complete. Please Wait ..." })
@@ -64,6 +64,7 @@ class Default extends Component {
                     console.log(results)
 
                     this.props.scanNetwork(results)
+                    this.props.setModeComplete()
 
                     // setTimeout(1100, window.location.href = "/results")
                 } else {
@@ -109,4 +110,4 @@ const titleFont = {
     fontSize: '32px'
 }
 
-export default connect(null, { scanNetwork })(Default)
+export default connect(null, { scanNetwork, setModeNull, setModeComplete })(Default)

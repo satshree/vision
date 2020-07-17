@@ -104,7 +104,7 @@ class Results extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    results: state
+    results: state.data
 })
 
 export default connect(mapStateToProps, {})(Results)

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-// import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import { setModeDefault, setModeCustom } from '../actions'
 
 class Options extends Component {
     render() {
@@ -17,7 +19,7 @@ class Options extends Component {
                             </Tooltip>
                         }
                     >
-                        <Button href="/default" variant="info" style={{ marginRight: "5px" }}>Let Vision Do The Dirty Work</Button>
+                        <Button onClick={this.props.setModeDefault} variant="info" style={{ marginRight: "5px" }}>Let Vision Do The Dirty Work</Button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         key='custom'
@@ -28,7 +30,7 @@ class Options extends Component {
                             </Tooltip>
                         }
                     >
-                        <Button href="/custom" variant="info">Scan The Network Yourself</Button>
+                        <Button onClick={this.props.setModeCustom} variant="info">Scan The Network Yourself</Button>
                     </OverlayTrigger>
                 </div>
             </React.Fragment>
@@ -36,4 +38,4 @@ class Options extends Component {
     }
 }
 
-export default Options
+export default connect(null, { setModeDefault, setModeCustom })(Options)
