@@ -24,14 +24,6 @@ export const setModeDefault = () => dispatch => {
     })
 }
 
-export const setModeCustom = () => dispatch => {
-    dispatch({
-        type: SET_MODE,
-        mode: { mode: "CUSTOM", subMode: null }
-
-    })
-}
-
 export const setModeCustomRange = () => dispatch => {
     dispatch({
         type: SET_MODE,

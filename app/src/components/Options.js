@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
-import { setModeDefault, setModeCustom } from '../actions'
+import { setModeDefault, setModeCustomRange } from '../actions'
 
 class Options extends Component {
     render() {
@@ -30,7 +30,7 @@ class Options extends Component {
                             </Tooltip>
                         }
                     >
-                        <Button onClick={this.props.setModeCustom} variant="info">Scan The Network Yourself</Button>
+                        <Button onClick={this.props.setModeCustomRange} variant="info">Scan The Network Yourself</Button>
                     </OverlayTrigger>
                 </div>
             </React.Fragment>
@@ -38,4 +38,9 @@ class Options extends Component {
     }
 }
 
-export default connect(null, { setModeDefault, setModeCustom })(Options)
+const reduxActions = { 
+    setModeDefault, 
+    setModeCustomRange 
+}
+
+export default connect(null, reduxActions)(Options)

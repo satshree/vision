@@ -77,8 +77,6 @@ class Default extends Component {
 
                     this.props.scanNetwork(results)
                     this.props.setModeComplete()
-
-                    // setTimeout(1100, window.location.href = "/results")
                 } else {
                     this.setState({ message: resp })
                 }

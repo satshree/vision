@@ -3,7 +3,7 @@ import { Button, Tab, Nav, Row, Col, ProgressBar } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import swal from 'sweetalert'
 
-import { setModeNull } from '../actions'
+import { setModeNull, setModeCustomRange, setModeCustomOnly } from '../actions'
 
 import Range from '../components/RangeForm'
 import Particular from '../components/ParticularForm'
@@ -11,10 +11,13 @@ import Particular from '../components/ParticularForm'
 import '../assets/css/nav-pills.css'
 import '../assets/css/form.css'
 
+const { ipcRenderer } = window.require('electron')
+
 class Custom extends Component {
     state = {
-        key: "range",
-        input: true
+        key: this.props.mode.subMode,
+        input: true,
+        message:"Scanning IP: 192.168.1.1 | Reply: Positive"
     }
 
     handlePartialCancel = () => {
@@ -41,6 +44,45 @@ class Custom extends Component {
         })
     }
 
+    changeMode = (key) => {
+        this.setState({ ...this.state, key })
+
+        this.state.key === "range" ? this.props.setModeCustomRange() : this.props.setModeCustomOnly()
+    }
+
+    runScript = () => {
+        let startTime = new Date()
+
+        ipcRenderer.send('NETWORK', ["range"])
+        ipcRenderer.on('NETWORK', (e, resp) => {
+            // console.log('here', resp)
+            if (resp === "ERR") {
+                swal({
+                    title: "Something went wrong.",
+                    text: "Please try again.",
+                    icon: "error"
+                }).then(() => this.props.setModeNull())
+            } else {
+                if (resp.indexOf("Scanning") === -1) {
+                    let endTime = new Date()
+
+                    this.props.setTime(this.setScanTime(endTime, startTime))
+
+                    this.setState({ message: "Scan Complete. Please Wait ..." })
+
+                    let results = JSON.parse(resp)
+                    // console.log("DEFAULT")
+                    // console.log(results)
+
+                    this.props.scanNetwork(results)
+                    this.props.setModeComplete()
+                } else {
+                    this.setState({ message: resp })
+                }
+            }
+        });
+    }
+
     getProgress() {
         return (
             <React.Fragment>
@@ -51,7 +93,7 @@ class Custom extends Component {
                         <i>Vision</i> is scanning network.
                     </span>
                     <div className="status" style={{ marginTop: '1em' }}>
-                        Scanning IP: 192.168.1.1 | Reply: Positive
+                        { this.state.message }
                     </div>
                     <ProgressBar animated={true} now={50} style={{ marginTop: '1em' }} />
                     <br></br>
@@ -68,7 +110,7 @@ class Custom extends Component {
             <React.Fragment>
                 <div className="inputs">
                     <Tab.Container activeKey={this.state.key}
-                        onSelect={(key) => this.setState({ input: this.state.input, key })}>
+                        onSelect={(key) => this.changeMode(key)}>
                         <Row>
                             <Col sm={3}>
                                 <Nav variant="pills" className="flex-column">
@@ -82,13 +124,13 @@ class Custom extends Component {
                             </Col>
                             <Col sm={9}>
                                 <Tab.Content>
-                                    <Tab.Pane eventKey="range">
+                                    <Tab.Pane eventKey="Range">
                                         <div className="form-title">
                                             Scan Range of IP Address
                                                                 </div>
                                         <Range />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="particular">
+                                    <Tab.Pane eventKey="Only">
                                         <div className="form-title">
                                             Probe a Particular IP Addresses
                                                                 </div>
@@ -101,7 +143,7 @@ class Custom extends Component {
                     <br></br>
                     <div className="btns" style={{ marginTop: '1em' }}>
                         <Button onClick={ this.props.setModeNull } variant="info" style={{ marginRight: '1em' }}>Back</Button>
-                        <Button type="button" variant="success" onClick={() => { this.setState({ input: !this.state.input, key: this.state.key }) }}>Scan</Button>
+                        <Button type="button" variant="success" onClick={() => { this.setState({ ...this.state, input: !this.state.input }) }}>Scan</Button>
                     </div>
                 </div>
             </React.Fragment>
@@ -127,9 +169,19 @@ class Custom extends Component {
     }
 }
 
-export default connect(null, { setModeNull })(Custom)
-
 const titleFont = {
     fontWeight: 450,
     fontSize: '32px'
 }
+
+const reduxActions = {
+    setModeNull,
+    setModeCustomRange,
+    setModeCustomOnly
+}
+
+const mapStateToProps = (state) => {
+    mode:state.scanMode
+}
+
+export default connect(mapStateToProps, reduxActions)(Custom)
