@@ -18,7 +18,6 @@ class Home extends Component {
     
     getSystemIP = async () => {
         const ip = await ipcRenderer.invoke('SYSTEM_IP')
-        console.log("HJEREE", ip)
         this.setState(ip)
     }
 

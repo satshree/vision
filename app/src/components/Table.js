@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { Table, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 
 import '../assets/css/table.css'
 
 class TableView extends Component {
+    getData() {
+        return this.props.data.hosts
+    }
 
     render() {
         return (
@@ -18,24 +21,27 @@ class TableView extends Component {
                                 <th>Hostname</th>
                                 <th>Operating System</th>
                                 <th>Open Ports</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>192.168.1.1</td>
-                                <td>AB:DC:FE:GE:DV:SD</td>
-                                <td>Apple</td>
-                                <td>iPhone</td>
-                                <td>iOS</td>
-                                <td>34635</td>
-                                <td>
-                                    <DropdownButton variant="warning" title="Scan">
-                                        <Dropdown.Item as="button">Port</Dropdown.Item>
-                                        <Dropdown.Item as="button">Operating System</Dropdown.Item>
-                                    </DropdownButton>
-                                </td>
-                            </tr>
+                            { this.getData().map(host => {
+                                return (
+                                    <tr key={host.IP}>
+                                        <td>{host.IP}</td>
+                                        <td>{host.MAC}</td>
+                                        <td>{host.Vendor}</td>
+                                        <td>{host.Hostname}</td>
+                                        <td>
+                                            { host.OS ? host.OS : <Button variant="warning">Scan</Button> }
+                                        </td>
+                                        <td>
+                                            <Button variant="warning">Scan</Button>
+                                            <br></br>
+                                            {host.Ports}
+                                        </td>
+                                    </tr>
+                                )
+                            }) }
                         </tbody>
                     </Table>
                 </div>

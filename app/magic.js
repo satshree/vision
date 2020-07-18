@@ -46,11 +46,11 @@ ipcMain.on('NETWORK', (event, args) => {
 
 function runEngine(file, args, channel) {
     // let cmd = path.join(__dirname, "../engine/networkscan.exe")
-    let cmd = path.resolve(".", `engine/${file}`)
+    let cmd = `${path.resolve(".", `engine/${file}`)}`
 
     // console.log("cmd:", cmd, args)
     // const bin = spawn(cmd, args)
-    const bin = spawn("python", [cmd, args])
+    const bin = spawn("sudo", ["python3", cmd, args])
 
     bin.on("error", (err) => {
         console.log('ERROR', String.fromCharCode.apply(null, err))
@@ -67,7 +67,6 @@ function runEngine(file, args, channel) {
     bin.stdout.on("data", (data) => {
         // console.log(String.fromCharCode.apply(null, data))
         win.webContents.send(channel, String.fromCharCode.apply(null, data))
-        // win.webContents.send('RESULT', String.fromCharCode.apply(null, data))
     })
 }
 
@@ -79,24 +78,6 @@ ipcMain.handle('SYSTEM_IP', async (event) => {
 
     // console.log({ ip, gateway })
     return { ip, gateway }
-
-    
-    // let os = require('os')
-    // let ifaces = os.networkInterfaces();
-    // // console.log(ifaces)
-
-    // let ignoreIface = ["lo", "eth0"]
-    // Object.keys(ifaces).forEach(function (ifname) {
-    //     // console.log("here", ifname)
-    //     let iface = ifaces[ifname]
-    //     if (ignoreIface.indexOf(ifname) === -1) {
-    //         iface.forEach(function(ifn){
-    //             if(ifn.family === "IPv4" && !ifn.internal) {
-    //                 event.returnValue = ifn.address
-    //             }
-    //         })
-    //     }
-    // })
 })
 
 function getIP(network) {

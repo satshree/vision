@@ -96,7 +96,7 @@ class NetworkScan:
 
             # OBJECT | DICTIONARY
             self.hosts[ip] = {
-                'MAC': mac, "OS": "", "Ports": []}
+                'MAC': mac}
 
 
         return len(answered)
@@ -129,7 +129,7 @@ class NetworkScan:
                 'MAC': meta['MAC'], 
                 "Vendor": meta["Vendor"],
                 "Hostname": meta["Hostname"],
-                "OS": "", 
+                "OS": None, 
                 "Ports": []
             })
 
@@ -143,6 +143,27 @@ class NetworkScan:
 
 # FUNCTION
 
+def check_ip(host, organized_data):
+    for each in organized_data:
+        if host == each["Vendor"]:
+            each["Count"] += 1
+            return False
+    
+    return True
+
+
+def organize(results):
+    organized_data = []
+
+    for host, info in results.items():
+        if check_ip(info['Vendor'], organized_data):
+            organized_data.append({
+                "IP":host,
+                "Vendor":info["Vendor"],
+                "Count":1
+            })
+    
+    return organized_data
 
 def main():
     """ Main module. """
@@ -233,8 +254,13 @@ def main():
     net.hostname()
     hosts = net.get_host_lists()
 
+    output = {
+        'hosts':hosts,
+        'organized':organize(net.all_hosts)
+    }
+
     # Give out results to Electron.
-    echo_result(json.dumps(hosts))
+    echo_result(json.dumps(output))
 
 
 # MAIN

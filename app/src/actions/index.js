@@ -1,4 +1,4 @@
-import { NETWORK_SCAN, SET_MODE } from './types'
+import { NETWORK_SCAN, SET_MODE, SET_TIME } from './types'
 
 export const scanNetwork = (results) => dispatch => {
     // console.log("ACTION")
@@ -52,5 +52,12 @@ export const setModeComplete = () => dispatch => {
     dispatch({
         type: SET_MODE,
         mode: { mode: "COMPLETE", subMode:null }
+    })
+}
+
+export const setTime = (time) => dispatch => {
+    dispatch({
+        type: SET_TIME,
+        time
     })
 }

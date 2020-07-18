@@ -37,31 +37,55 @@ class Results extends Component {
     getData() {
         console.log("RESULTS")
         console.log(this.props)
+        return this.props.results.results
+    }
+
+    getGraphData() {
+        let results = this.getData()
+        let labels = []
+        let data = []
+        let backgroundColor = []
+        let borderColor = []
+
+        for (let host of results.organized) {
+            let colorR = Math.floor((Math.random() * 300) + 1);
+            let colorG = Math.floor((Math.random() * 300) + 1);
+            let colorB = Math.floor((Math.random() * 300) + 1);
+    
+            let background = `rgba(${colorR}, ${colorG}, ${colorB}, 0.1)`
+            let border = `rgba(${colorR}, ${colorG}, ${colorB}, 1)`
+
+            labels.push(host.Vendor)
+            data.push(host.Count)
+            backgroundColor.push(background)
+            borderColor.push(border)
+        }
 
         return {
-            labels: ['Apple', 'Dell', 'Samsung', 'Cisco'],
+            labels,
             datasets: [{
                 label: 'Total Devices',
-                data: [3, 4, 2, 1],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                data,
+                backgroundColor,
+                borderColor,
                 borderWidth: 1
             }]
         }
+    }
+
+    getTime() {
+        return this.props.time
+    }
+
+    getTotalHost() {
+        let results = this.getData()
+        let count = 0
+
+        for (let host of results.organized) {
+            count += host.Count
+        }
+
+        return count
     }
 
     render() {
@@ -77,7 +101,7 @@ class Results extends Component {
                             <div className="tabs">
                                 <Tabs defaultActiveKey="graph" className="d-flex justify-content-center" variant="pills" id="uncontrolled-tab">
                                     <Tab eventKey="graph" title="Graphical View">
-                                        <Graphs data={this.getData()} />
+                                        <Graphs data={this.getGraphData()} />
                                     </Tab>
                                     <Tab eventKey="table" title="Tabular View">
                                         <TableView data={this.getData()}/>
@@ -87,9 +111,9 @@ class Results extends Component {
                         </div>
                         <div className="scan-data">
                             <hr></hr>
-                            <small>Total Time Taken for scan: <strong>55 seconds</strong></small>
+                            <small>Total Time Taken for scan: <strong>{this.getTime()} seconds</strong>, Roughly { Math.floor(this.getTime()/60) } minutes.</small>
                             {' | '}
-                            <small>Total Devices Scanned: <strong>13</strong></small>
+                            <small>Total Devices Scanned: <strong>{this.getTotalHost()}</strong></small>
                         </div>
                         <hr></hr>
                         <div className="btns">
@@ -104,7 +128,8 @@ class Results extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    results: state.data
+    results: state.data,
+    time: state.scanTime
 })
 
 export default connect(mapStateToProps, {})(Results)

@@ -24,3 +24,7 @@ table {
   text-align: center;
   width: 15%;
 }
+
+tbody {
+  font-size: 14px;
+}
