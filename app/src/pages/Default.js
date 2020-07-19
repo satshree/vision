@@ -9,8 +9,12 @@ const { ipcRenderer } = window.require('electron')
 
 
 class Default extends Component {
-    state = {
-        message: "Initiating scan ..."
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            message: "Initiating scan ..."
+        }
     }
 
     getStatus() {

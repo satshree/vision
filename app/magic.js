@@ -1,11 +1,13 @@
 const {
     app,
     BrowserWindow,
-    ipcMain
+    ipcMain,
+    session
 } = require('electron')
 const path = require('path')
 const url = require('url')
 const { spawn } = require('child_process')
+const os = require('os')
 
 app.name = "Vision"
 
@@ -29,9 +31,22 @@ function createWindow() {
         slashes: true
     }))
 
+    loadReactDevTools()
     // if (!isMac) {
     // win.removeMenu()
     // }
+}
+
+async function loadReactDevTools() {
+    const ses = await session.defaultSession.loadExtension(
+        path.join(
+            os.homedir(),
+            ".config/google-chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.8.2_0"
+        )
+    ).then(dev => console.log("dev"))
+    .catch(err => console.log(err))
+
+    return ses
 }
 
 app.on('ready', createWindow)
@@ -41,16 +56,33 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on('NETWORK', (event, args) => {
-    runEngine('networkscan.py', args, 'NETWORK')
+    let range;
+    let mode;
+
+    if (args.indexOf("default") === -1) {
+        mode = args[0]
+        range = args[1]
+    } else {
+        mode = args
+        range = null
+    }
+
+    runEngine('networkscan.py', mode, range, 'NETWORK')
 })
 
-function runEngine(file, args, channel) {
+function runEngine(file, mode, range, channel) {
     // let cmd = path.join(__dirname, "../engine/networkscan.exe")
     let cmd = `${path.resolve(".", `engine/${file}`)}`
 
-    // console.log("cmd:", cmd, args)
-    // const bin = spawn(cmd, args)
-    const bin = spawn("sudo", ["python3", cmd, args])
+    // console.log("cmd:", cmd, mode)
+    // const bin = spawn(cmd, mode)
+    let bin;
+
+    if (range) {
+        bin = spawn("sudo", ["python3", cmd, mode, range]) 
+    } else {
+        bin = spawn("sudo", ["python3", cmd, mode]) 
+    }
 
     bin.on("error", (err) => {
         console.log('ERROR', String.fromCharCode.apply(null, err))

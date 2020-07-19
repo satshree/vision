@@ -1,14 +1,18 @@
 import { NETWORK_SCAN, SET_MODE, SET_TIME } from './types'
 
+
+// SCAN ACTIONS
+
 export const scanNetwork = (results) => dispatch => {
-    // console.log("ACTION")
-    // console.log(results)
     dispatch({
         type: NETWORK_SCAN,
         results: results
     })
     
 }
+
+
+// SET MODE ACTIONS
 
 export const setModeNull = () => dispatch => {
     dispatch({

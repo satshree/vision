@@ -203,10 +203,7 @@ def main():
 
     elif 'range' in sys.argv:
         # Initialize IP range.
-        ip_range = []
-        for ip in sys.argv:
-            if ip not in ('range'):
-                ip_range.append(ip)
+        ip_range = sys.argv[-1].split(",")
 
         # Initialize network scanner.
         net = NetworkScan(ip_range=ip_range)
@@ -222,7 +219,6 @@ def main():
 
         while True:
             # Progress status.
-            progress += 1
             total_progress = int((progress/(total_ip-1))*100)
             current_ip_last_octet = int(net.break_ip(net.ip)[-1])
 
@@ -239,6 +235,8 @@ def main():
 
             # Update IP address.
             net.update_ip()
+
+            progress += 1
 
     elif 'particular' in sys.argv:
         ip = sys.argv[-1]

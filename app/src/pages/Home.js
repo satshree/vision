@@ -6,10 +6,13 @@ import Options from '../components/Options'
 const { ipcRenderer } = window.require('electron')
 
 class Home extends Component {
-    
-    state = {
-        ip:"...",
-        gateway:"..."
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            ip:"...",
+            gateway:"..."
+        }
     }
 
     componentWillMount() {

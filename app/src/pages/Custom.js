@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Button, Tab, Nav, Row, Col, ProgressBar } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import swal from 'sweetalert'
+import $ from 'jquery'
 
-import { setModeNull, setModeCustomRange, setModeCustomOnly } from '../actions'
+import { setModeNull, setModeCustomRange, setModeCustomOnly, setModeComplete, setTime, scanNetwork } from '../actions'
 
 import Range from '../components/RangeForm'
 import Particular from '../components/ParticularForm'
@@ -14,10 +15,16 @@ import '../assets/css/form.css'
 const { ipcRenderer } = window.require('electron')
 
 class Custom extends Component {
-    state = {
-        key: this.props.mode.subMode,
-        input: true,
-        message:"Scanning IP: 192.168.1.1 | Reply: Positive"
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            key: this.props.mode.subMode,
+            input: true,
+            message:"Initiating scan ...",
+            progress:0,
+            value:null
+        }
     }
 
     handlePartialCancel = () => {
@@ -39,7 +46,7 @@ class Custom extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                this.setState({ input: true, key: this.state.key })
+                this.setState({...this.state, input: true })
             }
         })
     }
@@ -50,10 +57,28 @@ class Custom extends Component {
         this.state.key === "Only" ? this.props.setModeCustomRange() : this.props.setModeCustomOnly()
     }
 
+    setScanTime(endTime, startTime) {
+        return Math.floor(
+            (endTime.getTime() - startTime.getTime())/1000
+        )
+    }
+
     runScript = () => {
+        this.setState({...this.state, input:false})
         let startTime = new Date()
 
-        ipcRenderer.send('NETWORK', ["range"])
+        let scanMode;
+        let value;
+
+        if (this.state.key === "Range") {
+            scanMode = "range"
+            value = this.state.value.split(" ")
+        } else {
+            scanMode = "particular"
+            value = this.state.value
+        }
+
+        ipcRenderer.send('NETWORK', [scanMode, value])
         ipcRenderer.on('NETWORK', (e, resp) => {
             // console.log('here', resp)
             if (resp === "ERR") {
@@ -68,23 +93,67 @@ class Custom extends Component {
 
                     this.props.setTime(this.setScanTime(endTime, startTime))
 
-                    this.setState({ message: "Scan Complete. Please Wait ..." })
+                    this.setState({...this.state, message: "Scan Complete. Please Wait ..." })
 
                     let results = JSON.parse(resp)
-                    // console.log("DEFAULT")
-                    // console.log(results)
 
                     this.props.scanNetwork(results)
                     this.props.setModeComplete()
                 } else {
-                    this.setState({ message: resp })
+                    let message;
+                    let progress;
+                    if (resp.indexOf(",") === -1) {
+                        message = resp
+                        progress = 0
+                    } else {
+                        message = resp.split(",")[0]
+                        progress = resp.split(",")[1]
+                    }
+
+                    this.setState({...this.state, message, progress })
                 }
             }
         });
     }
 
     startScan = () => {
+        let { key } = this.state
+        let value;
 
+        if (key === "Range") {
+            value = `${$("input[name='firstIP']").val()} ${$("input[name='lastIP']").val()}`
+        } else {
+            value = $("input[name='onlyIP']").val()
+        }
+
+        this.setState({...this.state, value}, () => {
+            let validIP = this.validateIP(value.split(" "))
+    
+            if (validIP) {
+                this.runScript()
+            } else {
+                swal({
+                    title:"Invalid IP Address.",
+                    icon:"warning"
+                })
+            }
+        })
+
+    }
+
+    validateIP(ipAddresses) {
+        for (let ip of ipAddresses) {
+            if (
+                !(
+                /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)
+                )
+            )
+            {
+                return false
+            }
+        }
+
+        return true
     }
 
     getProgress = () => {
@@ -99,7 +168,7 @@ class Custom extends Component {
                     <div className="status" style={{ marginTop: '1em' }}>
                         { this.state.message }
                     </div>
-                    <ProgressBar animated={true} now={50} style={{ marginTop: '1em' }} />
+                    <ProgressBar animated={true} now={this.state.progress} label={`${this.state.progress} %`} style={{ marginTop: '1em' }} />
                     <br></br>
                     <div className="btns">
                         <Button variant="danger" style={{ marginRight: '1em' }} onClick={this.handlePartialCancel}>Cancel</Button>
@@ -181,7 +250,10 @@ const titleFont = {
 const reduxActions = {
     setModeNull,
     setModeCustomRange,
-    setModeCustomOnly
+    setModeCustomOnly,
+    setModeComplete,
+    setTime,
+    scanNetwork
 }
 
 const mapStateToProps = (state) => ({
