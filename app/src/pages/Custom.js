@@ -47,7 +47,7 @@ class Custom extends Component {
     changeMode = (key) => {
         this.setState({ ...this.state, key })
 
-        this.state.key === "range" ? this.props.setModeCustomRange() : this.props.setModeCustomOnly()
+        this.state.key === "Only" ? this.props.setModeCustomRange() : this.props.setModeCustomOnly()
     }
 
     runScript = () => {
@@ -83,7 +83,11 @@ class Custom extends Component {
         });
     }
 
-    getProgress() {
+    startScan = () => {
+
+    }
+
+    getProgress = () => {
         return (
             <React.Fragment>
                 <div className="progress-box">
@@ -105,7 +109,7 @@ class Custom extends Component {
         )
     }
 
-    getForms() {
+    getForms = () => {
         return (
             <React.Fragment>
                 <div className="inputs">
@@ -115,10 +119,10 @@ class Custom extends Component {
                             <Col sm={3}>
                                 <Nav variant="pills" className="flex-column">
                                     <Nav.Item>
-                                        <Nav.Link eventKey="range">Scan IP Range</Nav.Link>
+                                        <Nav.Link eventKey="Range">Scan IP Range</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="particular">Scan Particular IP</Nav.Link>
+                                        <Nav.Link eventKey="Only">Scan Particular IP</Nav.Link>
                                     </Nav.Item>
                                 </Nav>
                             </Col>
@@ -143,7 +147,7 @@ class Custom extends Component {
                     <br></br>
                     <div className="btns" style={{ marginTop: '1em' }}>
                         <Button onClick={ this.props.setModeNull } variant="info" style={{ marginRight: '1em' }}>Back</Button>
-                        <Button type="button" variant="success" onClick={() => { this.setState({ ...this.state, input: !this.state.input }) }}>Scan</Button>
+                        <Button type="button" variant="success" onClick={ this.startScan }>Scan</Button>
                     </div>
                 </div>
             </React.Fragment>
@@ -180,8 +184,8 @@ const reduxActions = {
     setModeCustomOnly
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => ({
     mode:state.scanMode
-}
+})
 
 export default connect(mapStateToProps, reduxActions)(Custom)
