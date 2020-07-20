@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { Spinner, Button } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import swal from 'sweetalert'
+import React, { Component } from 'react';
+import { Spinner, Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import swal from 'sweetalert';
 
-import { scanNetwork, setModeNull, setModeComplete, setTime } from '../actions'
+import { scanNetwork, setModeNull, setModeComplete, setTime } from '../actions';
 
-const { ipcRenderer } = window.require('electron')
+const { ipcRenderer } = window.require('electron');
 
 
 class Default extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             message: "Initiating scan ..."
@@ -22,7 +22,7 @@ class Default extends Component {
             <React.Fragment>
                 {this.state.message}
             </React.Fragment>
-        )
+        );
     }
 
     handleCancel = () => {
@@ -44,21 +44,22 @@ class Default extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                this.props.setModeNull()
+                ipcRenderer.invoke('KILL');
+                this.props.setModeNull();
             }
-        })
+        });
     }
 
     setScanTime(endTime, startTime) {
         return Math.floor(
             (endTime.getTime() - startTime.getTime())/1000
-        )
+        );
     }
 
     componentDidMount() {
-        let startTime = new Date()
+        let startTime = new Date();
 
-        ipcRenderer.send('NETWORK', ["default"])
+        ipcRenderer.send('NETWORK', ["default"]);
         ipcRenderer.on('NETWORK', (e, resp) => {
             // console.log('here', resp)
             if (resp === "ERR") {
@@ -66,23 +67,23 @@ class Default extends Component {
                     title: "Something went wrong.",
                     text: "Please try again.",
                     icon: "error"
-                }).then(() => this.props.setModeNull())
+                }).then(() => this.props.setModeNull());
             } else {
                 if (resp.indexOf("Scanning") === -1) {
-                    let endTime = new Date()
+                    let endTime = new Date();
 
-                    this.props.setTime(this.setScanTime(endTime, startTime))
+                    this.props.setTime(this.setScanTime(endTime, startTime));
 
-                    this.setState({ message: "Scan Complete. Please Wait ..." })
+                    this.setState({ message: "Scan Complete. Please Wait ..." });
 
-                    let results = JSON.parse(resp)
+                    let results = JSON.parse(resp);
                     // console.log("DEFAULT")
                     // console.log(results)
 
-                    this.props.scanNetwork(results)
-                    this.props.setModeComplete()
+                    this.props.scanNetwork(results);
+                    this.props.setModeComplete();
                 } else {
-                    this.setState({ message: resp })
+                    this.setState({ message: resp });
                 }
             }
         });
@@ -114,7 +115,7 @@ class Default extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 }
 
@@ -126,4 +127,4 @@ const titleFont = {
 
 const reduxActions = { scanNetwork, setModeNull, setModeComplete, setTime }
 
-export default connect(null, reduxActions)(Default)
+export default connect(null, reduxActions)(Default);

@@ -158,7 +158,7 @@ def organize(results):
     for host, info in results.items():
         if check_ip(info['Vendor'], organized_data):
             organized_data.append({
-                "IP":host,
+                # "IP":host,
                 "Vendor":info["Vendor"],
                 "Count":1
             })

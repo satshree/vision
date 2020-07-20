@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
-import { setModeDefault, setModeCustomRange } from '../actions'
+import { setModeDefault, setModeCustomRange } from '../actions';
 
 class Options extends Component {
     render() {
@@ -34,7 +34,7 @@ class Options extends Component {
                     </OverlayTrigger>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 }
 
@@ -43,4 +43,4 @@ const reduxActions = {
     setModeCustomRange 
 }
 
-export default connect(null, reduxActions)(Options)
+export default connect(null, reduxActions)(Options);

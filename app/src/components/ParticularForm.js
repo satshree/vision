@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
+import React, { Component } from 'react';
+import { Form } from 'react-bootstrap';
 
 class Particular extends Component {
     render() {
@@ -12,7 +12,7 @@ class Particular extends Component {
                     </Form.Group>
                 </Form>
             </React.Fragment>
-        )
+        );
     }
 }
 

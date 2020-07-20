@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import { Button, Tab, Nav, Row, Col, ProgressBar } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import swal from 'sweetalert'
-import $ from 'jquery'
+import React, { Component } from 'react';
+import { Button, Tab, Nav, Row, Col, ProgressBar } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import swal from 'sweetalert';
+import $ from 'jquery';
 
-import { setModeNull, setModeCustomRange, setModeCustomOnly, setModeComplete, setTime, scanNetwork } from '../actions'
+import { setModeNull, setModeCustomRange, setModeCustomOnly, setModeComplete, setTime, scanNetwork } from '../actions';
 
-import Range from '../components/RangeForm'
-import Particular from '../components/ParticularForm'
+import Range from '../components/RangeForm';
+import Particular from '../components/ParticularForm';
 
-import '../assets/css/nav-pills.css'
-import '../assets/css/form.css'
+import '../assets/css/nav-pills.css';
+import '../assets/css/form.css';
 
-const { ipcRenderer } = window.require('electron')
+const { ipcRenderer } = window.require('electron');
 
 class Custom extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             key: this.props.mode.subMode,
@@ -46,13 +46,14 @@ class Custom extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                this.setState({...this.state, input: true })
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, input: true });
             }
-        })
+        });
     }
 
     changeMode = (key) => {
-        this.setState({ ...this.state, key })
+        this.setState({ ...this.state, key });
 
         this.state.key === "Only" ? this.props.setModeCustomRange() : this.props.setModeCustomOnly()
     }
@@ -60,25 +61,25 @@ class Custom extends Component {
     setScanTime(endTime, startTime) {
         return Math.floor(
             (endTime.getTime() - startTime.getTime())/1000
-        )
+        );
     }
 
     runScript = () => {
         this.setState({...this.state, input:false})
-        let startTime = new Date()
+        let startTime = new Date();
 
         let scanMode;
         let value;
 
         if (this.state.key === "Range") {
             scanMode = "range"
-            value = this.state.value.split(" ")
+            value = this.state.value.split(" ");
         } else {
             scanMode = "particular"
             value = this.state.value
         }
 
-        ipcRenderer.send('NETWORK', [scanMode, value])
+        ipcRenderer.send('NETWORK', [scanMode, value]);
         ipcRenderer.on('NETWORK', (e, resp) => {
             // console.log('here', resp)
             if (resp === "ERR") {
@@ -86,19 +87,19 @@ class Custom extends Component {
                     title: "Something went wrong.",
                     text: "Please try again.",
                     icon: "error"
-                }).then(() => this.props.setModeNull())
+                }).then(() => this.props.setModeNull());
             } else {
                 if (resp.indexOf("Scanning") === -1) {
-                    let endTime = new Date()
+                    let endTime = new Date();
 
-                    this.props.setTime(this.setScanTime(endTime, startTime))
+                    this.props.setTime(this.setScanTime(endTime, startTime));
 
-                    this.setState({...this.state, message: "Scan Complete. Please Wait ..." })
+                    this.setState({...this.state, message: "Scan Complete. Please Wait ..." });
 
-                    let results = JSON.parse(resp)
+                    let results = JSON.parse(resp);
 
-                    this.props.scanNetwork(results)
-                    this.props.setModeComplete()
+                    this.props.scanNetwork(results);
+                    this.props.setModeComplete();
                 } else {
                     let message;
                     let progress;
@@ -110,7 +111,7 @@ class Custom extends Component {
                         progress = resp.split(",")[1]
                     }
 
-                    this.setState({...this.state, message, progress })
+                    this.setState({...this.state, message, progress });
                 }
             }
         });
@@ -123,21 +124,21 @@ class Custom extends Component {
         if (key === "Range") {
             value = `${$("input[name='firstIP']").val()} ${$("input[name='lastIP']").val()}`
         } else {
-            value = $("input[name='onlyIP']").val()
+            value = $("input[name='onlyIP']").val();
         }
 
         this.setState({...this.state, value}, () => {
-            let validIP = this.validateIP(value.split(" "))
+            let validIP = this.validateIP(value.split(" "));
     
             if (validIP) {
-                this.runScript()
+                this.runScript();
             } else {
                 swal({
                     title:"Invalid IP Address.",
                     icon:"warning"
-                })
+                });
             }
-        })
+        });
 
     }
 
@@ -157,6 +158,9 @@ class Custom extends Component {
     }
 
     getProgress = () => {
+        let progress = this.state.key === "Range" ? this.state.progress : 100
+        let progressMessage = this.state.key === "Range" ? `${progress} %` : null
+        
         return (
             <React.Fragment>
                 <div className="progress-box">
@@ -168,14 +172,14 @@ class Custom extends Component {
                     <div className="status" style={{ marginTop: '1em' }}>
                         { this.state.message }
                     </div>
-                    <ProgressBar animated={true} now={this.state.progress} label={`${this.state.progress} %`} style={{ marginTop: '1em' }} />
+                    <ProgressBar animated={true} now={progress} label={progressMessage} style={{ marginTop: '1em' }} />
                     <br></br>
                     <div className="btns">
                         <Button variant="danger" style={{ marginRight: '1em' }} onClick={this.handlePartialCancel}>Cancel</Button>
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 
     getForms = () => {
@@ -220,7 +224,7 @@ class Custom extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 
     render() {
@@ -238,7 +242,7 @@ class Custom extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 }
 
@@ -258,6 +262,6 @@ const reduxActions = {
 
 const mapStateToProps = (state) => ({
     mode:state.scanMode
-})
+});
 
-export default connect(mapStateToProps, reduxActions)(Custom)
+export default connect(mapStateToProps, reduxActions)(Custom);

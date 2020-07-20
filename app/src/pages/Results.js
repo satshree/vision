@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import { Tabs, Tab, Button } from 'react-bootstrap'
-import swal from 'sweetalert'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import { Tabs, Tab, Button } from 'react-bootstrap';
+import swal from 'sweetalert';
+import { connect } from 'react-redux';
 
-import Graphs from '../components/Graphs'
-import TableView from '../components/Table'
+import Graphs from '../components/Graphs';
+import TableView from '../components/Table';
 
-import '../assets/css/nav-pills.css'
-import '../assets/css/results.css'
+import '../assets/css/nav-pills.css';
+import '../assets/css/results.css';
 
 class Results extends Component {
     returnHome = () => {
@@ -31,23 +31,26 @@ class Results extends Component {
             if (resp) {
                 window.location.href = "/"
             }
-        })
+        });
     }
 
     getData() {
-        console.log("RESULTS")
-        console.log(this.props)
-        return this.props.results.results
+        // console.log("RESULTS")
+        // console.log(this.props.results)
+        return this.props.results
     }
 
     getGraphData() {
-        let results = this.getData()
+        let results = this.getData().organized;
+        // console.log("GRAPH")
+        // console.log(results)
+
         let labels = []
         let data = []
         let backgroundColor = []
         let borderColor = []
 
-        for (let host of results.organized) {
+        for (let host of results) {
             let colorR = Math.floor((Math.random() * 300) + 1);
             let colorG = Math.floor((Math.random() * 300) + 1);
             let colorB = Math.floor((Math.random() * 300) + 1);
@@ -55,10 +58,10 @@ class Results extends Component {
             let background = `rgba(${colorR}, ${colorG}, ${colorB}, 0.1)`
             let border = `rgba(${colorR}, ${colorG}, ${colorB}, 1)`
 
-            labels.push(host.Vendor)
-            data.push(host.Count)
-            backgroundColor.push(background)
-            borderColor.push(border)
+            labels.push(host.Vendor);
+            data.push(host.Count);
+            backgroundColor.push(background);
+            borderColor.push(border);
         }
 
         return {
@@ -78,10 +81,10 @@ class Results extends Component {
     }
 
     getTotalHost() {
-        let results = this.getData()
+        let results = this.getData().organized
         let count = 0
 
-        for (let host of results.organized) {
+        for (let host of results) {
             count += host.Count
         }
 
@@ -123,7 +126,7 @@ class Results extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 }
 
@@ -132,4 +135,4 @@ const mapStateToProps = (state) => ({
     time: state.scanTime
 })
 
-export default connect(mapStateToProps, {})(Results)
+export default connect(mapStateToProps, {})(Results);

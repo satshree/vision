@@ -5,9 +5,7 @@ function resultReducer(state = {}, action) {
     switch(action.type) {
         case NETWORK_SCAN:
             let resultData = action.results
-            return {
-                results: resultData
-            }
+            return resultData
         default:
             return state
     }

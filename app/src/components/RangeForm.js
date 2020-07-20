@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Row, Col, Form } from 'react-bootstrap'
+import React, { Component } from 'react';
+import { Row, Col, Form } from 'react-bootstrap';
 
 class Range extends Component {
     render() {
@@ -22,7 +22,7 @@ class Range extends Component {
                     </Row>
                 </Form>
             </React.Fragment>
-        )
+        );
     }
 }
 
