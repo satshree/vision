@@ -3,6 +3,8 @@ import { Tabs, Tab, Button } from 'react-bootstrap';
 import swal from 'sweetalert';
 import { connect } from 'react-redux';
 
+import { setModeNull } from '../actions';
+
 import Graphs from '../components/Graphs';
 import TableView from '../components/Table';
 
@@ -29,7 +31,7 @@ class Results extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                window.location.href = "/"
+                this.props.setModeNull();
             }
         });
     }
@@ -135,4 +137,4 @@ const mapStateToProps = (state) => ({
     time: state.scanTime
 })
 
-export default connect(mapStateToProps, {})(Results);
+export default connect(mapStateToProps, { setModeNull })(Results);

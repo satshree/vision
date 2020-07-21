@@ -59,10 +59,82 @@ class TableView extends Component {
         })
     }
 
+    getOSBtn = (host) => { 
+        let os = host.OS;
+        let ip = host.IP;
+
+        if (os) {
+            return (
+                <React.Fragment>
+                    { os }
+                    <Button id={`btnOS-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.state.active }>
+                        Re-Scan
+                    </Button> 
+                </React.Fragment>
+            );
+        } else {
+            return (
+                <React.Fragment>
+                    <Button id={`btnOS-${ip}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.state.active }>
+                        Scan
+                    </Button> 
+                </React.Fragment>
+            );
+        }
+    }
+
+    getPortBtn = (host) => {
+        let ports = host.Ports;
+        let ip = host.IP;
+
+        if (ports.length !== 0) {
+            return (
+                <React.Fragment>
+                    {ports}
+                    <br></br>
+                    <Button id={`btnPort-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" disabled={ this.state.active }>
+                        Re-Scan
+                    </Button>
+                </React.Fragment>
+            );
+        } else {
+            return (
+                <React.Fragment>
+                    <Button id={`btnPort-${ip}`} variant="outline-primary" size="sm" disabled={ this.state.active }>
+                        Scan
+                    </Button> 
+                </React.Fragment>
+            );
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
-                <Toast id="toastBox" show={ this.state.active } style={{
+                <Toast id="osToastBox" show={ this.state.os } style={{
+                    height: '90px',
+                    width: '270px',
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    borderRadius:'5px',
+                    boxShadow: '0px 0px 5px 2px #999'
+                }}>
+                    <Toast.Header closeButton={false}>
+                        <strong className="mr-auto">
+                            Fingerprinting OS.
+                        </strong>
+                    </Toast.Header>
+                    <Toast.Body>
+                        <div className="vertical-center" style={{minHeight:0, paddingLeft:'5px'}}>
+                            <Spinner animation="grow" variant="info" />  
+                            <span style={{marginLeft:'10px'}}>
+                                Probing IP { this.state.ip } ...
+                            </span>
+                        </div>
+                    </Toast.Body>
+                </Toast>
+                <Toast id="portToastBox" show={ this.state.port } style={{
                     height: '90px',
                     width: '270px',
                     position: 'absolute',
@@ -71,14 +143,14 @@ class TableView extends Component {
                 }}>
                     <Toast.Header closeButton={false}>
                         <strong className="mr-auto">
-                            Probing IP { this.state.ip } ...
+                            Scanning Port of { this.state.ip }.
                         </strong>
                     </Toast.Header>
                     <Toast.Body>
                         <div className="vertical-center" style={{minHeight:0, paddingLeft:'5px'}}>
                             <Spinner animation="grow" variant="info" />  
                             <span style={{marginLeft:'10px'}}>
-                                { this.state.os ? "Fingerprinting OS." : `Scanning port ${this.state.scanPort}.` }
+                                Probing port { this.state.scanPort } ...
                             </span>
                         </div>
                     </Toast.Body>
@@ -104,12 +176,10 @@ class TableView extends Component {
                                         <td>{host.Vendor}</td>
                                         <td>{host.Hostname}</td>
                                         <td>
-                                            { host.OS ? host.OS : <Button id={`btnOS-${host.IP}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(host.IP) }} disabled={ this.state.active }>Scan</Button> }
+                                            { this.getOSBtn(host) }
                                         </td>
                                         <td>
-                                            <Button id={`btnPort-${host.IP}`} variant="outline-primary" size="sm" disabled={ this.state.active }>Scan</Button>
-                                            <br></br>
-                                            {host.Ports}
+                                            { this.getPortBtn(host) }
                                         </td>
                                     </tr>
                                 );
