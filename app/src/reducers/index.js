@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { NETWORK_SCAN, SET_MODE, SET_TIME } from '../actions/types'
+import { NETWORK_SCAN, SET_MODE, SET_TIME, ACTIVE_PROCESS } from '../actions/types'
 
 function resultReducer(state = {}, action) {
     switch(action.type) {
@@ -29,8 +29,18 @@ function timeReducer(state={time:0}, action) {
     }
 }
 
+function processReducer(state=false, action) {
+    switch(action.type) {
+        case ACTIVE_PROCESS:
+            return action.process
+        default:
+            return state
+    }
+}
+
 export default combineReducers({
     data: resultReducer,
     scanMode: modeReducer,
-    scanTime: timeReducer
+    scanTime: timeReducer,
+    activeProcess: processReducer
 })

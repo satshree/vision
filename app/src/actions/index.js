@@ -1,4 +1,4 @@
-import { NETWORK_SCAN, SET_MODE, SET_TIME } from './types'
+import { NETWORK_SCAN, SET_MODE, SET_TIME, ACTIVE_PROCESS } from './types'
 
 
 // SCAN ACTIONS
@@ -9,6 +9,23 @@ export const scanNetwork = (results) => dispatch => {
         results: results
     })
     
+}
+
+
+// PROCESS ACTIONS
+
+export const setActiveProcess = () => dispatch => {
+    dispatch({
+        type: ACTIVE_PROCESS,
+        process: true
+    })
+}
+
+export const removeActiveProcess = () => dispatch => {
+    dispatch({
+        type: ACTIVE_PROCESS,
+        process: false
+    })
 }
 
 

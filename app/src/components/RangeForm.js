@@ -8,15 +8,15 @@ class Range extends Component {
                 <Form id="rangeForm">
                     <Row>
                         <Col sm={6}>
-                            <Form.Group>
-                                <Form.Control type="text" name="firstIP" />
-                                <Form.Label className="form-control-placeholder">First IP Address</Form.Label>
+                            <Form.Group className="material-form-group">
+                                <Form.Control type="text" name="firstIP" className="material-form-control" />
+                                <Form.Label className="material-form-control-placeholder">First IP Address</Form.Label>
                             </Form.Group>
                         </Col>
                         <Col sm={6}>
-                            <Form.Group>
-                                <Form.Control type="text" name="lastIP" />
-                                <Form.Label className="form-control-placeholder">Last IP Address</Form.Label>
+                            <Form.Group className="material-form-group">
+                                <Form.Control type="text" name="lastIP" className="material-form-control" />
+                                <Form.Label className="material-form-control-placeholder">Last IP Address</Form.Label>
                             </Form.Group>
                         </Col>
                     </Row>

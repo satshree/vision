@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import Head from '../components/Head'
-import Options from '../components/Options'
+import { scanNetwork } from '../actions';
 
-const { ipcRenderer } = window.require('electron')
+import Head from '../components/Head';
+import Options from '../components/Options';
+
+const { ipcRenderer } = window.require('electron');
 
 class Home extends Component {
     constructor(props) {
@@ -15,21 +18,21 @@ class Home extends Component {
         }
     }
 
-    componentWillMount() {
-        this.getSystemIP()
+    componentDidMount() {
+        this.getSystemIP();
     }
     
     getSystemIP = async () => {
-        const ip = await ipcRenderer.invoke('SYSTEM_IP')
-        this.setState(ip)
+        const ip = await ipcRenderer.invoke('SYSTEM_IP');
+        this.setState(ip);
     }
 
     getIP = () => {
-        return this.state.ip
+        return this.state.ip;
     }
 
     getGateway = () => {
-        return this.state.gateway
+        return this.state.gateway;
     }
 
     render() {
@@ -62,11 +65,10 @@ class Home extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
 }
 
-export default Home
 
 const box = {
     paddingLeft: '10em',
@@ -74,3 +76,5 @@ const box = {
     marginTop: '50px',
     textAlign: 'center'
 }
+
+export default connect(null, { scanNetwork })(Home);

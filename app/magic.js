@@ -35,7 +35,7 @@ function createWindow() {
         slashes: true
     }));
 
-    // loadReactDevTools();
+    loadReactDevTools();
     // loadReduxDevTools();
 
     // if (!isMac) {
@@ -43,6 +43,8 @@ function createWindow() {
     // }
 }
 
+
+// DEV TOOLS
 async function loadReactDevTools() {
     const ses = await session.defaultSession.loadExtension(
         path.join(
@@ -65,6 +67,8 @@ async function loadReduxDevTools() {
     return ses
 }
 
+
+// APP EVENTS
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -72,6 +76,7 @@ app.on('window-all-closed', () => {
 });
 
 
+// IPC CHANNELS
 ipcMain.on('NETWORK', (event, args) => {
     let range;
     let mode;
@@ -88,12 +93,18 @@ ipcMain.on('NETWORK', (event, args) => {
 });
 
 ipcMain.on('OS', (event, args) => {
-    let range = null
-    let mode = args
+    let range = null;
+    let mode = args;
 
-    runEngine('os.py', mode, range, 'OS');
+    runEngine('osscan.py', mode, range, 'OS');
 })
 
+ipcMain.on('PORT', (event, args) => {
+    let mode = args[0];
+    let range = args[1];
+
+    runEngine('portscan.py', mode, range, 'PORT');
+})
 
 ipcMain.handle('SYSTEM_IP', async (event) => {
     let network = require('network');
@@ -104,7 +115,6 @@ ipcMain.handle('SYSTEM_IP', async (event) => {
     // console.log({ ip, gateway })
     return { ip, gateway }
 });
-
 
 ipcMain.handle('KILL', () => {
     try {
@@ -117,6 +127,7 @@ ipcMain.handle('KILL', () => {
 });
 
 
+// FUNCTIONS
 function runEngine(file, mode, range, channel) {
     // let cmd = path.join(__dirname, "../engine/networkscan.exe")
     let cmd = `${path.resolve(".", `engine/${file}`)}`
@@ -146,7 +157,6 @@ function runEngine(file, mode, range, channel) {
         win.webContents.send(channel, String.fromCharCode.apply(null, data));
     });
 }
-
 
 function getIP(network) {
     return new Promise((resolve) => {

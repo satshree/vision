@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Table, Button, Spinner, Toast } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { scanNetwork } from '../actions';
+import { scanNetwork, setActiveProcess, removeActiveProcess } from '../actions';
+
+import Ports from './Ports'; 
 
 import '../assets/css/table.css';
 
@@ -14,11 +16,15 @@ class TableView extends Component {
 
         this.state = {
             ip:"",
-            active:false,
-            os:false,
-            port:false,
-            scanPort:0
+            os:false
         }
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state,callback)=>{
+            return;
+        };
     }
 
     getData() {
@@ -33,9 +39,6 @@ class TableView extends Component {
         let data = this.getData();
         let { ip } = this.state
 
-        // console.log("TABLE")
-        // console.log(data)
-
         for (let host of data.hosts) {
             if (host.IP === ip) {
                 host.OS = os;
@@ -43,14 +46,14 @@ class TableView extends Component {
             }
         }
 
-        // console.log("AFTER")
-        // console.log(data)
         this.updateReduxData(data);
-        this.setState({ ...this.state, ip:"", os:false, active:false });
+        this.setState({ ...this.state, ip:"", os:false });
+        this.props.removeActiveProcess();
     }
 
     runOsScan(ip) {
-        this.setState({ ...this.state, ip, os:true, active:true });
+        this.setState({ ...this.state, ip, os:true });
+        this.props.setActiveProcess();
         
 
         ipcRenderer.send('OS', [ip]);
@@ -67,7 +70,7 @@ class TableView extends Component {
             return (
                 <React.Fragment>
                     { os }
-                    <Button id={`btnOS-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.state.active }>
+                    <Button id={`btnOS-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.props.active }>
                         Re-Scan
                     </Button> 
                 </React.Fragment>
@@ -75,32 +78,7 @@ class TableView extends Component {
         } else {
             return (
                 <React.Fragment>
-                    <Button id={`btnOS-${ip}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.state.active }>
-                        Scan
-                    </Button> 
-                </React.Fragment>
-            );
-        }
-    }
-
-    getPortBtn = (host) => {
-        let ports = host.Ports;
-        let ip = host.IP;
-
-        if (ports.length !== 0) {
-            return (
-                <React.Fragment>
-                    {ports}
-                    <br></br>
-                    <Button id={`btnPort-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" disabled={ this.state.active }>
-                        Re-Scan
-                    </Button>
-                </React.Fragment>
-            );
-        } else {
-            return (
-                <React.Fragment>
-                    <Button id={`btnPort-${ip}`} variant="outline-primary" size="sm" disabled={ this.state.active }>
+                    <Button id={`btnOS-${ip}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.props.active }>
                         Scan
                     </Button> 
                 </React.Fragment>
@@ -134,27 +112,7 @@ class TableView extends Component {
                         </div>
                     </Toast.Body>
                 </Toast>
-                <Toast id="portToastBox" show={ this.state.port } style={{
-                    height: '90px',
-                    width: '270px',
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                }}>
-                    <Toast.Header closeButton={false}>
-                        <strong className="mr-auto">
-                            Scanning Port of { this.state.ip }.
-                        </strong>
-                    </Toast.Header>
-                    <Toast.Body>
-                        <div className="vertical-center" style={{minHeight:0, paddingLeft:'5px'}}>
-                            <Spinner animation="grow" variant="info" />  
-                            <span style={{marginLeft:'10px'}}>
-                                Probing port { this.state.scanPort } ...
-                            </span>
-                        </div>
-                    </Toast.Body>
-                </Toast>
+                
                 <div className="fixed-header">
                     <Table responsive hover>
                         <thead>
@@ -179,7 +137,9 @@ class TableView extends Component {
                                             { this.getOSBtn(host) }
                                         </td>
                                         <td>
-                                            { this.getPortBtn(host) }
+                                            <Ports 
+                                            ip={ host.IP }
+                                            />
                                         </td>
                                     </tr>
                                 );
@@ -192,4 +152,15 @@ class TableView extends Component {
     }
 }
 
-export default connect(null, { scanNetwork })(TableView)
+
+const reduxActions = {
+    scanNetwork,
+    setActiveProcess,
+    removeActiveProcess
+}
+
+const mapStateToProps = state => ({
+    active: state.activeProcess
+})
+
+export default connect(mapStateToProps, reduxActions)(TableView)

@@ -8,6 +8,14 @@ table {
     width:100%;
 }
 
+.table thead th {
+  vertical-align: middle;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}
+
 .fixed-header tbody{
   display:block;
   width: 100%;
@@ -17,12 +25,13 @@ table {
 
 .fixed-header thead tr {
    display: block;
+   width:100%;
 }
 
 .fixed-header th, .fixed-header td {
-  /* padding: 5px; */
+  padding: 9px;
   text-align: center;
-  width: 15%;
+  width: 13%;
 }
 
 tbody {

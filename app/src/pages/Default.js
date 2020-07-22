@@ -17,6 +17,13 @@ class Default extends Component {
         }
     }
 
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state,callback)=>{
+            return;
+        };
+    }
+
     getStatus() {
         return (
             <React.Fragment>
@@ -45,7 +52,8 @@ class Default extends Component {
         }).then((resp) => {
             if (resp) {
                 ipcRenderer.invoke('KILL');
-                this.props.setModeNull();
+                window.location.href = "/";
+                // this.props.setModeNull();
             }
         });
     }
@@ -67,7 +75,10 @@ class Default extends Component {
                     title: "Something went wrong.",
                     text: "Please try again.",
                     icon: "error"
-                }).then(() => this.props.setModeNull());
+                }).then(() => {
+                    window.location.href = "/";
+                    // this.props.setModeNull();
+                });
             } else {
                 if (resp.indexOf("Scanning") === -1) {
                     let endTime = new Date();

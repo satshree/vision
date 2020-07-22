@@ -31,21 +31,18 @@ class Results extends Component {
             dangerMode: true
         }).then((resp) => {
             if (resp) {
-                this.props.setModeNull();
+                window.location.href = "/";
+                // this.props.setModeNull();
             }
         });
     }
 
     getData() {
-        // console.log("RESULTS")
-        // console.log(this.props.results)
         return this.props.results
     }
 
     getGraphData() {
         let results = this.getData().organized;
-        // console.log("GRAPH")
-        // console.log(results)
 
         let labels = []
         let data = []
@@ -109,7 +106,7 @@ class Results extends Component {
                                         <Graphs data={this.getGraphData()} />
                                     </Tab>
                                     <Tab eventKey="table" title="Tabular View">
-                                        <TableView data={this.getData()}/>
+                                        <TableView data={this.getData()} />
                                     </Tab>
                                 </Tabs>
                             </div>
@@ -122,8 +119,8 @@ class Results extends Component {
                         </div>
                         <hr></hr>
                         <div className="btns">
-                            <Button variant="info" onClick={this.returnHome}>Home</Button>
-                            <Button variant="success">Save</Button>
+                            <Button variant="info" onClick={this.returnHome} disabled={ this.props.active }>Home</Button>
+                            <Button variant="success" disabled={ this.props.active }>Save</Button>
                         </div>
                     </div>
                 </div>
@@ -134,7 +131,8 @@ class Results extends Component {
 
 const mapStateToProps = (state) => ({
     results: state.data,
-    time: state.scanTime
+    time: state.scanTime,
+    active: state.activeProcess
 })
 
 export default connect(mapStateToProps, { setModeNull })(Results);
