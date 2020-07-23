@@ -2,7 +2,7 @@ import sys
 import json
 import socket
 from scapy.all import IP, TCP, sr1
-# from modules.resources import well_known_ports
+from modules.resources import well_known_ports
 from modules.common import echo_result
 
 __author__ = "Satshree Shrestha"
@@ -41,7 +41,10 @@ def scan_port(host, ports, verbose=True):
 if __name__ == "__main__":
     host = sys.argv[1]
 
-    ports = sys.argv[-1].split(",")
+    if "default" in sys.argv:
+        ports = well_known_ports()
+    else:
+        ports = sys.argv[-1].split(",")
 
     open_ports = scan_port(host, ports)
     

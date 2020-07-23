@@ -35,7 +35,7 @@ function createWindow() {
         slashes: true
     }));
 
-    loadReactDevTools();
+    // loadReactDevTools();
     // loadReduxDevTools();
 
     // if (!isMac) {
