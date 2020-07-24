@@ -11,6 +11,8 @@ import TableView from '../components/Table';
 import '../assets/css/nav-pills.css';
 import '../assets/css/results.css';
 
+const { ipcRenderer } = window.require('electron');
+
 class Results extends Component {
     returnHome = () => {
         swal({
@@ -90,6 +92,26 @@ class Results extends Component {
         return count
     }
 
+    saveData = () => {
+        let data = JSON.stringify(this.getData().hosts);
+
+        ipcRenderer.send('SAVE', data);
+        ipcRenderer.on('SAVE', (e, resp) => {
+            if (parseInt(resp) === 1) {
+                swal({
+                    title:"Results Saved.",
+                    text:"Results are saved in csv file in your desktop.",
+                    icon:"success"
+                })
+            } else {
+                swal({
+                    title:"Something went wrong.",
+                    text:"Please Try Again.",
+                    icon:"warning"
+                })
+            }
+        });
+    }
     render() {
         return (
             <React.Fragment>
@@ -120,7 +142,7 @@ class Results extends Component {
                         <hr></hr>
                         <div className="btns">
                             <Button variant="info" onClick={this.returnHome} disabled={ this.props.active }>Home</Button>
-                            <Button variant="success" disabled={ this.props.active }>Save</Button>
+                            <Button variant="success" onClick={this.saveData} disabled={ this.props.active }>Save</Button>
                         </div>
                     </div>
                 </div>

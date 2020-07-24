@@ -78,32 +78,39 @@ app.on('window-all-closed', () => {
 
 // IPC CHANNELS
 ipcMain.on('NETWORK', (event, args) => {
-    let range;
-    let mode;
+    let arg2;
+    let arg1;
 
     if (args.indexOf("default") === -1) {
-        mode = args[0]
-        range = args[1]
+        arg1 = args[0]
+        arg2 = args[1]
     } else {
-        mode = args
-        range = null
+        arg1 = args
+        arg2 = null
     }
 
-    runEngine('networkscan.py', mode, range, 'NETWORK');
+    runEngine('networkscan.py', arg1, arg2, 'NETWORK');
 });
 
 ipcMain.on('OS', (event, args) => {
-    let range = null;
-    let mode = args;
+    let arg2 = null;
+    let arg1 = args;
 
-    runEngine('osscan.py', mode, range, 'OS');
+    runEngine('osscan.py', arg1, arg2, 'OS');
 })
 
 ipcMain.on('PORT', (event, args) => {
-    let mode = args[0];
-    let range = args[1];
+    let arg1 = args[0];
+    let arg2 = args[1];
 
-    runEngine('portscan.py', mode, range, 'PORT');
+    runEngine('portscan.py', arg1, arg2, 'PORT');
+})
+
+ipcMain.on('SAVE', (event, args) => {
+    let arg2 = null;
+    let arg1 = args;
+
+    runEngine('save.py', arg1, arg2, 'SAVE');
 })
 
 ipcMain.handle('SYSTEM_IP', async (event) => {
@@ -112,13 +119,12 @@ ipcMain.handle('SYSTEM_IP', async (event) => {
     let ip = await getIP(network);
     let gateway = await getGatewayIP(network);
 
-    // console.log({ ip, gateway })
     return { ip, gateway }
 });
 
 ipcMain.handle('KILL', () => {
     try {
-        console.log("killing");
+        console.log("killing", bin);
         bin.kill("SIGINT");
     } catch (err) {
         console.log("Cannot kill process");
@@ -128,16 +134,16 @@ ipcMain.handle('KILL', () => {
 
 
 // FUNCTIONS
-function runEngine(file, mode, range, channel) {
+function runEngine(file, arg1, arg2, channel) {
     // let cmd = path.join(__dirname, "../engine/networkscan.exe")
     let cmd = `${path.resolve(".", `engine/${file}`)}`
 
     // console.log("cmd:", cmd, mode)
 
-    if (range) {
-        bin = spawn("sudo", ["python3", cmd, mode, range]); 
+    if (arg2) {
+        bin = spawn("sudo", ["python3", cmd, arg1, arg2]); 
     } else {
-        bin = spawn("sudo", ["python3", cmd, mode]);
+        bin = spawn("sudo", ["python3", cmd, arg1]);
     }
 
     // bin.on("error", (err) => {
