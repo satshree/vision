@@ -6,12 +6,9 @@ import swal from 'sweetalert';
 
 import { scanNetwork, setActiveProcess, removeActiveProcess } from '../actions';
 
-// import Ports from './Ports'; 
-
 import '../assets/css/table.css';
 
 const { ipcRenderer } = window.require('electron');
-
 const defaultMessage = "";
 
 class TableView extends Component {
@@ -21,7 +18,6 @@ class TableView extends Component {
         this.state = {
             ip:"",
             os:false,
-            // ports: false,
             scanPort:[
                 {
                     id:uuid4(),
@@ -53,13 +49,15 @@ class TableView extends Component {
         let data = this.getData();
         let { ip } = this.state
 
-        if (os === "Unable to identify") {
+        if (os == 0) {
+            console.log("FUCKING HEREE")
             this.setState({ ...this.state, message:"Unable to find OS."});
-
+            console.log(this.state)
             setTimeout(() => {
-                this.setState({ ...this.state, showToast:false, message:defaultMessage });
+                this.setState({ ...this.state, os:false, message:defaultMessage });
                 this.props.removeActiveProcess();
             }, 4500);
+            console.log(this.state)
         } else {
             for (let host of data.hosts) {
                 if (host.IP === ip) {
@@ -127,7 +125,6 @@ class TableView extends Component {
 
         if (defaultScan) {
             allPorts = "default";
-            this.setState({ ...this.state, message:"Scanning well known ports ...", scanPort:[]});
         } else {
             allPorts = [];
 
@@ -265,7 +262,7 @@ class TableView extends Component {
         return (
             <React.Fragment>
                 <Toast id="osToastBox" show={ this.state.os } style={{
-                    height: '90px',
+                    height: '110px',
                     width: '270px',
                     position: 'absolute',
                     top: '10px',
@@ -285,6 +282,7 @@ class TableView extends Component {
                                 { this.state.message }
                             </span>
                         </div>
+                        <small><i>This can take very long time...</i></small>
                     </Toast.Body>
                 </Toast>
                 <Toast id="portToastBox" show={ this.state.showToast } style={{
@@ -405,7 +403,12 @@ class TableView extends Component {
                         }>
                             <small>Well Known Ports?</small>
                         </OverlayTrigger>
-                        <Button variant="outline-success" type="button" onClick={ () => this.runPortScan(true) }>Scan Well Known Ports</Button>
+                        <Button variant="outline-success" type="button" onClick={ () => {
+                            this.setState(
+                                {...this.state, message:"Scanning well known ports ...", scanPort:[]}, 
+                                () => this.runPortScan(true)
+                            );
+                        } }>Scan Well Known Ports</Button>
                         <Button variant="success" type="button" onClick={ () => this.runPortScan(false) }>
                             Scan
                         </Button>

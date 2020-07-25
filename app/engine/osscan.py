@@ -11,6 +11,6 @@ if __name__ == "__main__":
         _nmap.scan(ip, arguments="-O")
         os = _nmap[ip]["osmatch"][0]["name"]
     except:
-        os = 'Unable to identify'
+        os = 0
     finally:
         echo_result(os)

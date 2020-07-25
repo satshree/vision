@@ -139,11 +139,11 @@ class Custom extends Component {
         this.setState({...this.state, value}, () => {
             let validIP = this.validateIP(value.split(" "));
     
-            if (validIP) {
+            if (validIP.valid) {
                 this.runScript();
             } else {
                 swal({
-                    title:"Invalid IP Address.",
+                    title:validIP.msg,
                     icon:"warning"
                 });
             }
@@ -152,6 +152,7 @@ class Custom extends Component {
     }
 
     validateIP(ipAddresses) {
+        let returnValue = { valid:true, msg:"Invalid IP Address." }
         for (let ip of ipAddresses) {
             if (
                 !(
@@ -159,11 +160,44 @@ class Custom extends Component {
                 )
             )
             {
-                return false
+                returnValue.valid = false;
+                return returnValue;
+            }
+
+            // if (!(/\s/g.test(ip))) {
+            //     returnValue.valid = false;
+            //     returnValue.msg = "Whitespace found.";
+            //     return returnValue;
+            // }
+        }
+
+        if (this.state.key === "Range") {
+            let firstIP = ipAddresses[0].split(".");
+            let lastIP = ipAddresses[1].split(".");
+
+            if (
+                !(
+                    (firstIP[0] === lastIP[0]) &&
+                    (firstIP[1] === lastIP[1]) &&
+                    (firstIP[2] === lastIP[2])
+                ) 
+                ||
+                !(
+                    (firstIP[3] < 255) &&
+                    (lastIP[3] < 256)
+                )
+                ||
+                (
+                    (firstIP[3] === lastIP[3])
+                )
+            ) {
+                returnValue.valid = false;
+                returnValue.msg = "Invalid IP Address Range.";
+                return returnValue;
             }
         }
 
-        return true
+        return returnValue;
     }
 
     getProgress = () => {
@@ -212,13 +246,13 @@ class Custom extends Component {
                                 <Tab.Content>
                                     <Tab.Pane eventKey="Range">
                                         <div className="form-title">
-                                            Scan Range of IP Address
+                                            Scan a Range of IP Addresses
                                                                 </div>
                                         <Range />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="Only">
                                         <div className="form-title">
-                                            Probe a Particular IP Addresses
+                                            Probe a Particular IP Address
                                                                 </div>
                                         <Particular />
                                     </Tab.Pane>

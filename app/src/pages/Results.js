@@ -100,7 +100,7 @@ class Results extends Component {
             if (parseInt(resp) === 1) {
                 swal({
                     title:"Results Saved.",
-                    text:"Results are saved in csv file in your desktop.",
+                    text:"Results are saved in a 'vision.csv' file in your desktop.",
                     icon:"success"
                 })
             } else {
