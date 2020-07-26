@@ -49,10 +49,9 @@ class TableView extends Component {
         let data = this.getData();
         let { ip } = this.state
 
-        if (os == 0) {
-            console.log("FUCKING HEREE")
+        if (parseInt(os) === 0) {
             this.setState({ ...this.state, message:"Unable to find OS."});
-            console.log(this.state)
+
             setTimeout(() => {
                 this.setState({ ...this.state, os:false, message:defaultMessage });
                 this.props.removeActiveProcess();
