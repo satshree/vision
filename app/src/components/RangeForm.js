@@ -9,13 +9,13 @@ class Range extends Component {
                     <Row>
                         <Col sm={6}>
                             <Form.Group className="material-form-group">
-                                <Form.Control type="text" name="firstIP" className="material-form-control" />
+                                <Form.Control type="text" name="firstIP" className="material-form-control" onKeyPress={ this.props.keyPress } />
                                 <Form.Label className="material-form-control-placeholder">First IP Address</Form.Label>
                             </Form.Group>
                         </Col>
                         <Col sm={6}>
                             <Form.Group className="material-form-group">
-                                <Form.Control type="text" name="lastIP" className="material-form-control" />
+                                <Form.Control type="text" name="lastIP" className="material-form-control" onKeyPress={ this.props.keyPress } />
                                 <Form.Label className="material-form-control-placeholder">Last IP Address</Form.Label>
                             </Form.Group>
                         </Col>

@@ -34,6 +34,12 @@ class Custom extends Component {
         };
     }
 
+    handleKeyEnterPress = (e) => {
+        if (e.key === "Enter") {
+            this.startScan()
+        }
+    }
+
     handlePartialCancel = () => {
         swal({
             title: "Are you sure you want to cancel scan?",
@@ -248,13 +254,13 @@ class Custom extends Component {
                                         <div className="form-title">
                                             Scan a Range of IP Addresses
                                                                 </div>
-                                        <Range />
+                                        <Range keyPress={ this.handleKeyEnterPress } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="Only">
                                         <div className="form-title">
                                             Probe a Particular IP Address
                                                                 </div>
-                                        <Particular />
+                                        <Particular keyPress={ this.handleKeyEnterPress }/>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Col>

@@ -7,7 +7,7 @@ class Particular extends Component {
             <React.Fragment>
                 <Form id="particularForm">
                     <Form.Group className="material-form-group">
-                        <Form.Control type="text" name="onlyIP" className="material-form-control"/>
+                        <Form.Control type="text" name="onlyIP" className="material-form-control" onKeyPress={ this.props.keyPress } />
                         <Form.Label className="material-form-control-placeholder">Enter IP Address</Form.Label>
                     </Form.Group>
                 </Form>
