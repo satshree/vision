@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Default from './pages/Default';
 import Custom from './pages/Custom';
 import Results from './pages/Results';
+import Others from './pages/Others';
+
 import store from './store';
 import './App.css';
 
@@ -46,6 +48,13 @@ class App extends Component {
             <Custom />
         </React.Fragment>
       );
+    } else if (this.state.mode === "OTHERS") {
+        // Other Features 
+        return (
+          <React.Fragment>
+              <Others />
+          </React.Fragment>
+        );
     } else if (this.state.mode === "COMPLETE") {
       // Results
       return (

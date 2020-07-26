@@ -1,0 +1,19 @@
+.btn-outline-primary {
+    margin: 10px;
+}
+
+.file-import-form {
+    padding:0 10rem;
+}
+
+.target-form {
+    padding:0 5rem;
+}
+
+tbody {
+    font-size: 14px;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}

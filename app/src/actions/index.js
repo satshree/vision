@@ -74,3 +74,10 @@ export const setTime = (time) => dispatch => {
         time
     })
 }
+
+export const setModeOthers = () => dispatch => {
+    dispatch({
+        type: SET_MODE,
+        mode: { mode: "OTHERS", subMode:null }
+    })
+}

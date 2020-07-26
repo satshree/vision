@@ -9,6 +9,7 @@ import { scanNetwork, setActiveProcess, removeActiveProcess } from '../actions';
 import '../assets/css/table.css';
 
 const { ipcRenderer } = window.require('electron');
+
 const defaultMessage = "";
 
 class TableView extends Component {
@@ -53,10 +54,8 @@ class TableView extends Component {
             this.setState({ ...this.state, message:"Unable to find OS."});
 
             setTimeout(() => {
-                this.setState({ ...this.state, os:false, message:defaultMessage });
-                this.props.removeActiveProcess();
+                this.setState({ ...this.state, os:false, message:defaultMessage }, () => this.props.removeActiveProcess());                
             }, 4500);
-            console.log(this.state)
         } else {
             for (let host of data.hosts) {
                 if (host.IP === ip) {
@@ -66,8 +65,7 @@ class TableView extends Component {
             }
     
             this.updateReduxData(data);
-            this.setState({ ...this.state, ip:"", os:false });
-            this.props.removeActiveProcess();
+            this.setState({ ...this.state, ip:"", os:false }, () => this.props.removeActiveProcess());            
         }
     }
 
@@ -80,8 +78,7 @@ class TableView extends Component {
             this.setState({ ...this.state, message:"No Open Ports Found."});
 
             setTimeout(() => {
-                this.setState({ ...this.state, showToast:false, message:defaultMessage });
-                this.props.removeActiveProcess();
+                this.setState({ ...this.state, showToast:false, message:defaultMessage }, () => this.props.removeActiveProcess());                
             }, 4500);
         } else {
             for (let host of data.hosts) {
@@ -93,8 +90,7 @@ class TableView extends Component {
     
             this.updateReduxData(data);
     
-            this.setState({ ...this.state, showToast:false, message:defaultMessage });
-            this.props.removeActiveProcess();
+            this.setState({ ...this.state, showToast:false, message:defaultMessage }, () => this.props.removeActiveProcess());            
         }
 
         if (this.state.scanPort.length === 0) {
@@ -105,13 +101,20 @@ class TableView extends Component {
     }
 
     runOsScan(ip) {
-        this.setState({ ...this.state, ip, os:true, message:`Probing IP ${ip}` });
-        this.props.setActiveProcess();
-        
+        this.setState({ ...this.state, ip, os:true, message:`Probing IP ${ip}` }, () => this.props.setActiveProcess());    
 
         ipcRenderer.send('OS', [ip]);
         ipcRenderer.on('OS', (e, resp) => {
-            this.updateOS(resp);
+            if (resp === "ERR") {
+                swal({
+                    title:"Something went wrong.",
+                    text:"Please try again.",
+                    icon:"warning"
+                })
+                .then(() => this.props.removeActiveProcess());
+            } else {
+                this.updateOS(resp);
+            }
         })
     }
 
@@ -137,15 +140,19 @@ class TableView extends Component {
         }
 
         if (proceed) {
-            this.setState({...this.state, showToast:true, showModal:false});
-
-            this.props.setActiveProcess();
+            this.setState({...this.state, showToast:true, showModal:false}, () => this.props.setActiveProcess());            
 
             ipcRenderer.send('PORT', [ip, allPorts]);
             ipcRenderer.on('PORT', (e, resp) => {
                 if(resp.indexOf("Probing") === -1) {
-                    this.setState({...this.state, message:"Complete."});
-                    this.updatePort(JSON.parse(resp));
+                    this.setState({...this.state, message:"Complete."}, () => this.updatePort(JSON.parse(resp)));                    
+                } else if (resp === "ERR") {
+                    swal({
+                        title:"Something went wrong.",
+                        text:"Please try again.",
+                        icon:"warning"
+                    })
+                    .then(() => this.props.removeActiveProcess());
                 } else {
                     this.setState({...this.state, message:resp});
                 }
@@ -382,7 +389,7 @@ class TableView extends Component {
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <OverlayTrigger trigger="hover" placement="left" overlay={
+                        <OverlayTrigger trigger={["hover", "click"]} placement="left" overlay={
                             <Popover id="popover-tip">
                                 <Popover.Title as="h3">Don't know which port to scan? Try scanning all well known ports!</Popover.Title>
                                 <Popover.Content>

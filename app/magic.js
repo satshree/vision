@@ -113,6 +113,13 @@ ipcMain.on('SAVE', (event, args) => {
     runEngine('save.py', arg1, arg2, 'SAVE');
 })
 
+ipcMain.on('BANNER', (event, args) => {
+    let arg2 = args[1];
+    let arg1 = args[0];
+
+    runEngine('bannergrab.py', arg1, arg2, 'BANNER');
+})
+
 ipcMain.handle('SYSTEM_IP', async (event) => {
     let network = require('network');
 

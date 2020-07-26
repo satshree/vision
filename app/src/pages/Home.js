@@ -44,7 +44,7 @@ class Home extends Component {
                         <hr></hr>
                         <Options />
                         <br></br>
-                        <div className="text-center" style={{marginTop:'50px'}}>
+                        <div className="text-center" style={{marginTop:'10px'}}>
                             <em>
                                 Your IP Address: { this.getIP() }
                             </em>
