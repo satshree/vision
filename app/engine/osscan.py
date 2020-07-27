@@ -14,3 +14,5 @@ if __name__ == "__main__":
         os = 0
     finally:
         echo_result(os)
+    
+    sys.exit(0)

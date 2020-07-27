@@ -61,10 +61,10 @@ export const setModeCustomOnly = () => dispatch => {
     })
 }
 
-export const setModeComplete = () => dispatch => {
+export const setModeComplete = (imported = null) => dispatch => {
     dispatch({
         type: SET_MODE,
-        mode: { mode: "COMPLETE", subMode:null }
+        mode: { mode: "COMPLETE", subMode:imported }
     })
 }
 

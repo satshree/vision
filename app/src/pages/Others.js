@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, Table, OverlayTrigger, Popover, Modal, InputGroup, Toast, Row, Col, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import { v4 as uuid4 } from 'uuid';
 import swal from 'sweetalert';
 
-import { scanNetwork, setModeNull, setActiveProcess, removeActiveProcess } from '../actions';
+import { scanNetwork, setModeNull, setActiveProcess, removeActiveProcess, setTime, setModeComplete } from '../actions';
 
 import Head from '../components/Head';
 
@@ -113,6 +114,96 @@ class Others extends Component {
     
     hideBannerValueModal = () => {
         this.setState({ ...this.state, bannerValueModal:false });
+    }
+
+    importFile = () => {
+        let file = $("input[name='file']")[0].files[0].path
+
+        ipcRenderer.send("IMPORT", [file]);
+        ipcRenderer.on("IMPORT", (e, resp) => {
+            if (resp.indexOf("Unable") === -1) {
+                let imported = "IMPORTED";
+
+                this.props.setTime(0);
+                this.props.scanNetwork(JSON.parse(resp));
+                this.props.setModeComplete(imported);
+            }
+        });
+    }
+
+    cancelOperationOS = () => {
+        swal({
+            title: "Cancel OS Fingerprinting?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, os:defaultOSState }, () => this.props.removeActiveProcess());
+            }
+        });
+    }
+
+    cancelOperationPort = () => {
+        swal({
+            title: "Cancel Port Scanning?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, port:defaultPortState }, () => this.props.removeActiveProcess());
+            }
+        });
+    }
+
+    cancelOperationBanner = () => {
+        swal({
+            title: "Cancel Banner Grabbing?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, banner:defaultBannerState }, () => this.props.removeActiveProcess());
+            }
+        });
     }
 
     getAllOpenPorts(hostPorts) {
@@ -340,16 +431,17 @@ class Others extends Component {
         var { port } = this.state;
         return(
             <React.Fragment>
-                <Toast id="osToastBox" show={ this.state.os.showToast } style={{
+                <Toast id="osToastBox" show={ this.state.os.showToast } onClose={ this.cancelOperationOS }
+                style={{
                     height: '110px',
-                    width: '270px',
+                    width: '290px',
                     position: 'absolute',
                     top: '10px',
                     right: '10px',
                     borderRadius:'5px',
                     boxShadow: '0px 0px 5px 2px #999'
                 }}>
-                    <Toast.Header closeButton={false}>
+                    <Toast.Header>
                         <strong className="mr-auto">
                             Fingerprinting OS of {this.state.target}.
                         </strong>
@@ -364,16 +456,17 @@ class Others extends Component {
                         <small><i>This can take very long time...</i></small>
                     </Toast.Body>
                 </Toast>
-                <Toast id="portToastBox" show={ this.state.port.showToast } style={{
+                <Toast id="portToastBox" show={ this.state.port.showToast } onClose={ this.cancelOperationPort }
+                style={{
                     height: '120px',
-                    width: '270px',
+                    width: '290px',
                     position: 'absolute',
                     top: '10px',
                     right: '10px',
                     borderRadius:'5px',
                     boxShadow: '0px 0px 5px 2px #999'
                 }}>
-                    <Toast.Header closeButton={false}>
+                    <Toast.Header>
                         <strong className="mr-auto">
                             Scanning Ports { this.getAllActivePorts() } of { this.state.target }
                         </strong>
@@ -387,16 +480,17 @@ class Others extends Component {
                         </div>
                     </Toast.Body>
                 </Toast>
-                <Toast id="bannerToastBox" show={ this.state.banner.showToast } style={{
+                <Toast id="bannerToastBox" show={ this.state.banner.showToast } onClose={ this.cancelOperationBanner }
+                style={{
                     height: '90px',
-                    width: '310px',
+                    width: '320px',
                     position: 'absolute',
                     top: '10px',
                     right: '10px',
                     borderRadius:'5px',
                     boxShadow: '0px 0px 5px 2px #999'
                 }}>
-                    <Toast.Header closeButton={false}>
+                    <Toast.Header>
                         <strong className="mr-auto">
                             Banner Grabbing {this.state.target}.
                         </strong>
@@ -417,7 +511,7 @@ class Others extends Component {
                         <hr></hr>
                         <div className="text-center">
                             <Form className="file-import-form">
-                                <Form.File label="Import Saved Vision Scan Results To Visualize Them" custom />
+                                <Form.File label="Import Saved Vision Scan Results To Visualize Them" custom name="file" onChange={ this.importFile } />
                             </Form>
                             <br></br>
                             <h5> OR </h5>
@@ -587,7 +681,9 @@ const reduxActions = {
     scanNetwork,
     setModeNull,
     setActiveProcess,
-    removeActiveProcess
+    removeActiveProcess,
+    setTime,
+    setModeComplete
 }
 
 const mapStateToProps = state => ({

@@ -40,3 +40,5 @@ if __name__ == "__main__":
         echo_result(1)
     except Exception as e:
         echo_result(2)
+    
+    sys.exit(0)

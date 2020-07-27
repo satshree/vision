@@ -30,3 +30,5 @@ if __name__ == "__main__":
     banner = grab(host, port__payload[0], port__payload[-1])
 
     echo_result(banner)
+
+    sys.exit(0)

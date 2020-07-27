@@ -15,28 +15,32 @@ const { ipcRenderer } = window.require('electron');
 
 class Results extends Component {
     returnHome = () => {
-        swal({
-            title: "Discard Results?",
-            icon: "warning",
-            buttons: {
-                cancel: {
-                    visible: true,
-                    value: false,
-                    text: "No"
+        if (this.props.imported !== "IMPORTED") {
+            swal({
+                title: "Discard Results?",
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        visible: true,
+                        value: false,
+                        text: "No"
+                    },
+                    confirm: {
+                        visible: true,
+                        value: true,
+                        text: "Yes"
+                    }
                 },
-                confirm: {
-                    visible: true,
-                    value: true,
-                    text: "Yes"
+                dangerMode: true
+            }).then((resp) => {
+                if (resp) {
+                    window.location.href = "/";
+                    // this.props.setModeNull();
                 }
-            },
-            dangerMode: true
-        }).then((resp) => {
-            if (resp) {
-                window.location.href = "/";
-                // this.props.setModeNull();
-            }
-        });
+            });
+        } else {
+            window.location.href = "/";
+        }
     }
 
     getData() {
@@ -112,6 +116,35 @@ class Results extends Component {
             }
         });
     }
+
+    getMetaData = () => {
+        if (this.props.imported === "IMPORTED") {
+            return (
+                <React.Fragment>
+                    <small>{ this.props.results.meta }</small>
+                    {' | '}
+                    <small>Total Devices Scanned: <strong>{this.getTotalHost()}</strong></small>
+                </React.Fragment>
+            );
+        } else {
+            return (
+                <React.Fragment>
+                    <small>Total Time Taken for scan: <strong>{this.getTime()} seconds</strong>, Roughly { Math.floor(this.getTime()/60) } minutes.</small>
+                    {' | '}
+                    <small>Total Devices Scanned: <strong>{this.getTotalHost()}</strong></small>
+                </React.Fragment>
+            );
+        }
+    }
+
+    disableBtn = () => {
+        if ((this.props.active) || (this.props.imported === "IMPORTED")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -135,14 +168,12 @@ class Results extends Component {
                         </div>
                         <div className="scan-data">
                             <hr></hr>
-                            <small>Total Time Taken for scan: <strong>{this.getTime()} seconds</strong>, Roughly { Math.floor(this.getTime()/60) } minutes.</small>
-                            {' | '}
-                            <small>Total Devices Scanned: <strong>{this.getTotalHost()}</strong></small>
+                            { this.getMetaData() }
                         </div>
                         <hr></hr>
                         <div className="btns">
                             <Button variant="info" onClick={this.returnHome} disabled={ this.props.active }>Home</Button>
-                            <Button variant="success" onClick={this.saveData} disabled={ this.props.active }>Save</Button>
+                            <Button variant="success" onClick={this.saveData} disabled={ this.disableBtn() }>Save</Button>
                         </div>
                     </div>
                 </div>
@@ -154,7 +185,8 @@ class Results extends Component {
 const mapStateToProps = (state) => ({
     results: state.data,
     time: state.scanTime,
-    active: state.activeProcess
+    active: state.activeProcess,
+    imported: state.scanMode.subMode
 })
 
 export default connect(mapStateToProps, { setModeNull })(Results);

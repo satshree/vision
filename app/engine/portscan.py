@@ -49,3 +49,5 @@ if __name__ == "__main__":
     open_ports = scan_port(host, ports)
     
     echo_result(json.dumps(open_ports))
+
+    sys.exit(0)

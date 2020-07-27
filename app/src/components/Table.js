@@ -11,6 +11,12 @@ import '../assets/css/table.css';
 const { ipcRenderer } = window.require('electron');
 
 const defaultMessage = "";
+const defaultScanPortValue = [
+    {
+        id:uuid4(),
+        value:''
+    }
+];
 
 class TableView extends Component {
     constructor(props) {
@@ -19,12 +25,7 @@ class TableView extends Component {
         this.state = {
             ip:"",
             os:false,
-            scanPort:[
-                {
-                    id:uuid4(),
-                    value:''
-                }
-            ],
+            scanPort:defaultScanPortValue,
             message:defaultMessage,
             showToast:false,
             showModal: false
@@ -44,6 +45,56 @@ class TableView extends Component {
 
     updateReduxData(data) {
         this.props.scanNetwork(data);
+    }
+
+    cancelOperationOS = () => {
+        swal({
+            title: "Cancel OS Fingerprinting?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, os: false, message:defaultMessage }, () => this.props.removeActiveProcess());
+            }
+        });
+    }
+
+    cancelOperationPort = () => {
+        swal({
+            title: "Cancel Port Scanning?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    visible: true,
+                    value: false,
+                    text: "No"
+                },
+                confirm: {
+                    visible: true,
+                    value: true,
+                    text: "Yes"
+                }
+            },
+            dangerMode: true
+        }).then((resp) => {
+            if (resp) {
+                ipcRenderer.invoke('KILL');
+                this.setState({...this.state, showToast: false, message:defaultMessage, scanPort:defaultScanPortValue }, () => this.props.removeActiveProcess());
+            }
+        });
     }
 
     updateOS(os) {
@@ -90,7 +141,7 @@ class TableView extends Component {
     
             this.updateReduxData(data);
     
-            this.setState({ ...this.state, showToast:false, message:defaultMessage }, () => this.props.removeActiveProcess());            
+            this.setState({ ...this.state, message:defaultMessage }, () => this.props.removeActiveProcess());            
         }
 
         if (this.state.scanPort.length === 0) {
@@ -145,7 +196,7 @@ class TableView extends Component {
             ipcRenderer.send('PORT', [ip, allPorts]);
             ipcRenderer.on('PORT', (e, resp) => {
                 if(resp.indexOf("Probing") === -1) {
-                    this.setState({...this.state, message:"Complete."}, () => this.updatePort(JSON.parse(resp)));                    
+                    this.setState({...this.state, showToast:false, message:"Complete."}, () => this.updatePort(JSON.parse(resp)));                    
                 } else if (resp === "ERR") {
                     swal({
                         title:"Something went wrong.",
@@ -213,6 +264,14 @@ class TableView extends Component {
         
         this.setState({...this.state, scanPort});
     }
+
+    disableBtn = () => {
+        if ((this.props.active) || (this.props.imported === "IMPORTED")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     getPortBtn = (host) => {
         let ip = host.IP;
@@ -221,7 +280,7 @@ class TableView extends Component {
         if (ports.length === 0) {
             return (
                 <React.Fragment>
-                    <Button id={`btnPort-${ip}`} variant="outline-primary" size="sm" onClick={ () => this.showModal(ip) } disabled={ this.props.active }> 
+                    <Button id={`btnPort-${ip}`} variant="outline-primary" size="sm" onClick={ () => this.showModal(ip) } disabled={ this.disableBtn() }> 
                         Scan
                     </Button>
                 </React.Fragment>
@@ -231,7 +290,7 @@ class TableView extends Component {
                 <React.Fragment>
                     { this.getAllOpenPorts(ports) }
                     <br></br>
-                    <Button id={`btnPort-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={ () => this.showModal(ip) } disabled={ this.props.active }> 
+                    <Button id={`btnPort-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={ () => this.showModal(ip) } disabled={ this.disableBtn() }> 
                         Re-Scan
                     </Button>
                 </React.Fragment>
@@ -247,7 +306,7 @@ class TableView extends Component {
             return (
                 <React.Fragment>
                     { os }
-                    <Button id={`btnOS-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.props.active }>
+                    <Button id={`btnOS-${ip}`} style={{ marginTop:'5px' }} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.disableBtn() }>
                         Re-Scan
                     </Button> 
                 </React.Fragment>
@@ -255,7 +314,7 @@ class TableView extends Component {
         } else {
             return (
                 <React.Fragment>
-                    <Button id={`btnOS-${ip}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.props.active }>
+                    <Button id={`btnOS-${ip}`} variant="outline-primary" size="sm" onClick={() => { this.runOsScan(ip) }} disabled={ this.disableBtn() }>
                         Scan
                     </Button> 
                 </React.Fragment>
@@ -267,7 +326,8 @@ class TableView extends Component {
         var { scanPort } = this.state;
         return (
             <React.Fragment>
-                <Toast id="osToastBox" show={ this.state.os } style={{
+                <Toast id="osToastBox" show={ this.state.os } onClose={ this.cancelOperationOS }
+                style={{
                     height: '110px',
                     width: '270px',
                     position: 'absolute',
@@ -276,7 +336,7 @@ class TableView extends Component {
                     borderRadius:'5px',
                     boxShadow: '0px 0px 5px 2px #999'
                 }}>
-                    <Toast.Header closeButton={false}>
+                    <Toast.Header>
                         <strong className="mr-auto">
                             Fingerprinting OS.
                         </strong>
@@ -291,7 +351,8 @@ class TableView extends Component {
                         <small><i>This can take very long time...</i></small>
                     </Toast.Body>
                 </Toast>
-                <Toast id="portToastBox" show={ this.state.showToast } style={{
+                <Toast id="portToastBox" show={ this.state.showToast } onClose={ this.cancelOperationPort }
+                style={{
                     height: '120px',
                     width: '270px',
                     position: 'absolute',
@@ -300,7 +361,7 @@ class TableView extends Component {
                     borderRadius:'5px',
                     boxShadow: '0px 0px 5px 2px #999'
                 }}>
-                    <Toast.Header closeButton={false}>
+                    <Toast.Header>
                         <strong className="mr-auto">
                             Scanning Ports { this.getAllActivePorts() } of { this.state.ip }
                         </strong>
@@ -433,7 +494,8 @@ const reduxActions = {
 }
 
 const mapStateToProps = state => ({
-    active: state.activeProcess
+    active: state.activeProcess,
+    imported: state.scanMode.subMode
 })
 
 export default connect(mapStateToProps, reduxActions)(TableView)

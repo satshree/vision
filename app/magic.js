@@ -9,13 +9,16 @@ const url = require('url');
 const { spawn } = require('child_process');
 const os = require('os');
 const process = require('process');
+const psTree = require('ps-tree');
 
 app.name = "Vision"
 
 var win;
 var bin;
 
-const isMac = process.platform === "darwin"
+const isMac = process.platform === "darwin";
+const isWin = process.platform === "win32";
+const isLinux = process.platform === "linux";
 
 function createWindow() {
     win = new BrowserWindow({
@@ -120,6 +123,13 @@ ipcMain.on('BANNER', (event, args) => {
     runEngine('bannergrab.py', arg1, arg2, 'BANNER');
 })
 
+ipcMain.on('IMPORT', (event, args) => {
+    let arg2 = null;
+    let arg1 = args;
+
+    runEngine('visualize.py', arg1, arg2, 'IMPORT');
+})
+
 ipcMain.handle('SYSTEM_IP', async (event) => {
     let network = require('network');
 
@@ -131,8 +141,23 @@ ipcMain.handle('SYSTEM_IP', async (event) => {
 
 ipcMain.handle('KILL', () => {
     try {
-        console.log("killing", bin);
-        bin.kill("SIGINT");
+        console.log("killing");
+        // bin.stdin.pause();
+        // bin.kill();
+        // kill(bin.pid);
+
+        if (isWin) {
+            let cp = require('child_process');
+            cp.exec('taskkill /PID ' + bin.pid + ' /T /F', function (error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if(error !== null) {
+                    console.log('exec error: ' + error);
+                }
+            });             
+        } else {
+            kill(bin.pid);
+        }
     } catch (err) {
         console.log("Cannot kill process");
         console.log(err);
@@ -190,3 +215,28 @@ function getGatewayIP(network){
         });
     });
 }
+
+const kill = function (pid, signal, callback) {
+    signal   = signal || 'SIGKILL';
+    callback = callback || function () {};
+    let killTree = true;
+    if(killTree) {
+        psTree(pid, function (err, children) {
+            [pid].concat(
+                children.map(function (p) {
+                    return p.PID;
+                })
+            ).forEach(function (tpid) {
+                try { process.kill(tpid, signal) }
+                catch (ex) { console.log("ERROR1 KILL", ex) }
+            });
+            callback();
+        });
+    } else {
+        try { process.kill(pid, signal) }
+        catch (ex) { console.log("ERROR2 KILL", ex) }
+        callback();
+    }
+
+    console.log("KILLED");
+};
