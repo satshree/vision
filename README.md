@@ -6,8 +6,8 @@ For the first version, Vision was built on Electron.js and plain HTML, CSS, Java
 
 ## Requirements
 The following tools must be installed in order to run Vision.  
-1. Nmap <a href="https://nmap.org/dist/nmap-7.80-setup.exe" download> Download Here </a> 
-2. Microsoft Visual C++ Redistributable 14.0 +  <a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank"> Download Here </a>
+1. Nmap. (<a href="https://nmap.org/dist/nmap-7.80-setup.exe" download> Download Here </a>) 
+2. Microsoft Visual C++ Redistributable 14.0 + (<a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank"> Download Here </a>)
 
 ## Setup
 <a href="https://drive.google.com/file/d/1kPUdkb31I2jSgwvsYGaZWalAe8mqHv9j/view?usp=sharing" target="_blank">Download installer here.</a>  
@@ -16,7 +16,7 @@ The following tools must be installed in order to run Vision.
 Vision provides you with two options to scan network,
   
 1. <b>Default Scan</b>: On starting Vision, press on "Let Vision Do The Dirty Work". Your network will be scanned until Vision finds two empty subnets.  
-2. <b>Custom Scan</b>: On starting Vision, press on "Scan Network Yourself". Here, Vision will let you scan a range of IP address or a single IP address.  
+2. <b>Custom Scan</b>: On starting Vision, press on "Scan The Network Yourself". Here, Vision will let you scan a range of IP addresses or a single IP address.  
   
 Once the scanning is done, all the hosts will be listed on graphical view and tabular view. The graph represents total number of devices grouped by their manufacturers. From tabular view, you can perform port scanning or OS fingerprinting on individual hosts. You can also save the scanned hosts as CSV file. Vision will save the file on your Desktop.  
   
