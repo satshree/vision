@@ -145,7 +145,7 @@ ipcMain.handle('KILL', () => {
 
 // FUNCTIONS
 function runEngine(file, arg1, arg2, channel) {
-    let cmd = `${path.resolve(".", `engine/${file}`)}`
+    let cmd = `${path.join(__dirname, `engine/${file}`)}`
 
     if (arg2) {
         bin = spawn(cmd, [arg1, arg2]); 

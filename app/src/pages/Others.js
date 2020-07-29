@@ -44,7 +44,8 @@ class Others extends Component {
         super(props);
 
         this.state = {
-            targer:"",
+            target:"",
+            importing:false,
             os:defaultOSState,
             port:defaultPortState,
             banner:defaultBannerState,
@@ -117,22 +118,27 @@ class Others extends Component {
     }
 
     importFile = (e) => {
+        this.setState({...this.state, importing:true});
+        
         let file = $("input[name='file']")[0].files[0].path;
-
+        
         ipcRenderer.send("IMPORT", [file]);
         ipcRenderer.on("IMPORT", (e, resp) => {
-            console.log(resp);
             if (resp.indexOf("Unable") === -1) {
                 let imported = "IMPORTED";
-
-                this.props.setTime(0);
-                this.props.scanNetwork(JSON.parse(resp));
-                this.props.setModeComplete(imported);
+                
+                this.setState({...this.state, importing:false}, () => {
+                    this.props.setTime(0);
+                    this.props.scanNetwork(JSON.parse(resp));
+                    this.props.setModeComplete(imported);
+                });
             } else {
-                swal({
-                    title:resp,
-                    icon:"warning"
-                })
+                this.setState({...this.state, importing:false}, () => {
+                    swal({
+                        title:resp,
+                        icon:"warning"
+                    });
+                });
             }
         });
     }
@@ -677,6 +683,16 @@ class Others extends Component {
                             Scan
                         </Button>
                     </Modal.Footer>
+                </Modal>
+
+                <Modal show={ this.state.importing } backdrop="static" keyboard={false} centered>
+                    <Modal.Body>
+                        <div className="container text-center">
+                            <div className="vertical-center" style={{minHeight:0}}>
+                                <Spinner animation="border" variant="info" style={{marginRight:'5px'}}/> <h5>Importing ...</h5>
+                            </div>
+                        </div>
+                    </Modal.Body>
                 </Modal>
             </React.Fragment>
         )

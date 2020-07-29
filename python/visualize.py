@@ -3,6 +3,9 @@ import sys
 import json
 from modules.common import echo_result
 
+__author__ = "Satshree Shrestha"
+
+
 def check_ip(host, organized_data):
     for each in organized_data:
         if host == each["Vendor"]:

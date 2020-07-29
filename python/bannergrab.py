@@ -3,6 +3,8 @@ import socket
 import json
 from modules.common import echo_result
 
+__author__ = "Satshree Shrestha"
+
 
 def grab(host, payload, port):
     """ Banner Grabbing. """

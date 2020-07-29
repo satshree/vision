@@ -164,7 +164,9 @@ class Results extends Component {
         if (this.state.saving) {
             return (
                 <React.Fragment>
-                    <Button variant="success" disabled={ true }><img src={loading} style={{marginRight:'5px', width:'25px'}}></img>Saving ...</Button>
+                    <Button variant="success" disabled={ true }>
+                        <img src={loading} alt="loading gif" style={{marginRight:'5px', width:'25px'}}></img>Saving ...
+                    </Button>
                 </React.Fragment>
             )
         } else {
