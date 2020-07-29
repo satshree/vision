@@ -6,8 +6,8 @@ For the first version, Vision was built on Electron.js and plain HTML, CSS, Java
 
 ## Requirements
 The following tools must be installed in order to run Vision.  
-1. Nmap. (<a href="https://nmap.org/dist/nmap-7.80-setup.exe" download> Download Here </a>) 
-2. Microsoft Visual C++ Redistributable 14.0 + (<a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank"> Download Here </a>)
+1. Nmap (<a href="https://nmap.org/dist/nmap-7.80-setup.exe" download>Download Here</a>) 
+2. Microsoft Visual C++ Redistributable 14.0 + (<a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank">Download Here</a>)
 
 ## Setup
 <a href="https://drive.google.com/file/d/1kPUdkb31I2jSgwvsYGaZWalAe8mqHv9j/view?usp=sharing" target="_blank">Download installer here.</a>  
