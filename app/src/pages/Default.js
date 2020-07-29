@@ -52,7 +52,7 @@ class Default extends Component {
         }).then((resp) => {
             if (resp) {
                 ipcRenderer.invoke('KILL');
-                window.location.href = "/";
+                window.location.href = "";
                 // this.props.setModeNull();
             }
         });
@@ -76,7 +76,7 @@ class Default extends Component {
                     text: "Please try again.",
                     icon: "error"
                 }).then(() => {
-                    window.location.href = "/";
+                    window.location.href = "";
                     // this.props.setModeNull();
                 });
             } else {

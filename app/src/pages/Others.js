@@ -116,17 +116,23 @@ class Others extends Component {
         this.setState({ ...this.state, bannerValueModal:false });
     }
 
-    importFile = () => {
-        let file = $("input[name='file']")[0].files[0].path
+    importFile = (e) => {
+        let file = $("input[name='file']")[0].files[0].path;
 
         ipcRenderer.send("IMPORT", [file]);
         ipcRenderer.on("IMPORT", (e, resp) => {
+            console.log(resp);
             if (resp.indexOf("Unable") === -1) {
                 let imported = "IMPORTED";
 
                 this.props.setTime(0);
                 this.props.scanNetwork(JSON.parse(resp));
                 this.props.setModeComplete(imported);
+            } else {
+                swal({
+                    title:resp,
+                    icon:"warning"
+                })
             }
         });
     }

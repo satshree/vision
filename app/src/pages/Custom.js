@@ -102,7 +102,7 @@ class Custom extends Component {
                     icon: "error"
                 })
                 // .then(() => this.props.setModeNull());
-                .then(() => window.location.href = "/");
+                .then(() => window.location.href = "");
             } else {
                 if (resp.indexOf("Scanning") === -1) {
                     let endTime = new Date();
@@ -268,7 +268,7 @@ class Custom extends Component {
                     </Tab.Container>
                     <br></br>
                     <div className="btns" style={{ marginTop: '1em' }}>
-                        <Button onClick={ () => window.location.href = "/" } variant="info" style={{ marginRight: '1em' }}>Back</Button>
+                        <Button onClick={ () => window.location.href="" } variant="info" style={{ marginRight: '1em' }}>Back</Button>
                         <Button type="button" variant="success" onClick={ this.startScan }>Scan</Button>
                     </div>
                 </div>

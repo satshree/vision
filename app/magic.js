@@ -2,23 +2,24 @@ const {
     app,
     BrowserWindow,
     ipcMain,
-    session
+    session,
+    dialog
 } = require('electron');
 const path = require('path');
 const url = require('url');
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const os = require('os');
 const process = require('process');
-const psTree = require('ps-tree');
+// const psTree = require('ps-tree');
 
 app.name = "Vision"
 
 var win;
 var bin;
 
-const isMac = process.platform === "darwin";
-const isWin = process.platform === "win32";
-const isLinux = process.platform === "linux";
+// const isMac = process.platform === "darwin";
+// const isWin = process.platform === "win32";
+// const isLinux = process.platform === "linux";
 
 function createWindow() {
     win = new BrowserWindow({
@@ -31,48 +32,34 @@ function createWindow() {
         }
     });
 
-    win.loadURL(url.format({
-        // pathname: path.join(__dirname, 'index.html'),
-        pathname: "localhost:3000",
-        protocol: 'http',
-        slashes: true
-    }));
+    // win.loadURL(url.format({
+    //     pathname: "localhost:3000",
+    //     protocol: 'file:',
+    //     slashes: false
+    // }));
 
-    // loadReactDevTools();
-    // loadReduxDevTools();
-
-    // if (!isMac) {
-    // win.removeMenu()
-    // }
+    win.loadFile('build/index.html');
+    
+    win.removeMenu()
 }
 
-
-// DEV TOOLS
-async function loadReactDevTools() {
-    const ses = await session.defaultSession.loadExtension(
-        path.join(
-            os.homedir(),
-            ".config/google-chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.8.2_0"
-        )
-    );
-
-    return ses
+async function alertUser() {
+    const options = {
+        type: 'warning',
+        title: 'Administrator Privileges Required.',
+        message: 'Please run Vision as admin.',
+        detail: "Vision requires admin privilege to utilize system's interfaces to scan the network.",
+    };
+    
+    dialog.showMessageBoxSync(null, options);
 }
-
-async function loadReduxDevTools() {
-    const ses = await session.defaultSession.loadExtension(
-        path.join(
-            os.homedir(),
-            ".config/google-chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0"
-        )
-    );
-
-    return ses
-}
-
 
 // APP EVENTS
-app.on('ready', createWindow);
+app.on('ready', () => {
+    exec('NET SESSION', function(err,so,se) {
+        se.length === 0 ? createWindow() : alertUser().then(() => app.quit());
+    });
+});
 
 app.on('window-all-closed', () => {
     app.quit();
@@ -92,42 +79,42 @@ ipcMain.on('NETWORK', (event, args) => {
         arg2 = null
     }
 
-    runEngine('networkscan.py', arg1, arg2, 'NETWORK');
+    runEngine('networkscan.exe', arg1, arg2, 'NETWORK');
 });
 
 ipcMain.on('OS', (event, args) => {
     let arg2 = null;
     let arg1 = args;
 
-    runEngine('osscan.py', arg1, arg2, 'OS');
+    runEngine('osscan.exe', arg1, arg2, 'OS');
 })
 
 ipcMain.on('PORT', (event, args) => {
     let arg1 = args[0];
     let arg2 = args[1];
 
-    runEngine('portscan.py', arg1, arg2, 'PORT');
+    runEngine('portscan.exe', arg1, arg2, 'PORT');
 })
 
 ipcMain.on('SAVE', (event, args) => {
     let arg2 = null;
     let arg1 = args;
 
-    runEngine('save.py', arg1, arg2, 'SAVE');
+    runEngine('save.exe', arg1, arg2, 'SAVE');
 })
 
 ipcMain.on('BANNER', (event, args) => {
     let arg2 = args[1];
     let arg1 = args[0];
 
-    runEngine('bannergrab.py', arg1, arg2, 'BANNER');
+    runEngine('bannergrab.exe', arg1, arg2, 'BANNER');
 })
 
 ipcMain.on('IMPORT', (event, args) => {
     let arg2 = null;
     let arg1 = args;
 
-    runEngine('visualize.py', arg1, arg2, 'IMPORT');
+    runEngine('visualize.exe', arg1, arg2, 'IMPORT');
 })
 
 ipcMain.handle('SYSTEM_IP', async (event) => {
@@ -141,23 +128,14 @@ ipcMain.handle('SYSTEM_IP', async (event) => {
 
 ipcMain.handle('KILL', () => {
     try {
-        console.log("killing");
-        // bin.stdin.pause();
-        // bin.kill();
-        // kill(bin.pid);
-
-        if (isWin) {
-            let cp = require('child_process');
-            cp.exec('taskkill /PID ' + bin.pid + ' /T /F', function (error, stdout, stderr) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
-                if(error !== null) {
-                    console.log('exec error: ' + error);
-                }
-            });             
-        } else {
-            kill(bin.pid);
-        }
+        let cp = require('child_process');
+        cp.exec('taskkill /PID ' + bin.pid + ' /T /F', function (error, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+            if(error !== null) {
+                console.log('exec error: ' + error);
+            }
+        });        
     } catch (err) {
         console.log("Cannot kill process");
         console.log(err);
@@ -167,15 +145,12 @@ ipcMain.handle('KILL', () => {
 
 // FUNCTIONS
 function runEngine(file, arg1, arg2, channel) {
-    // let cmd = path.join(__dirname, "../engine/networkscan.exe")
     let cmd = `${path.resolve(".", `engine/${file}`)}`
 
-    // console.log("cmd:", cmd, mode)
-
     if (arg2) {
-        bin = spawn("sudo", ["python3", cmd, arg1, arg2]); 
+        bin = spawn(cmd, [arg1, arg2]); 
     } else {
-        bin = spawn("sudo", ["python3", cmd, arg1]);
+        bin = spawn(cmd, [arg1]);
     }
 
     // bin.on("error", (err) => {
@@ -216,27 +191,27 @@ function getGatewayIP(network){
     });
 }
 
-const kill = function (pid, signal, callback) {
-    signal   = signal || 'SIGKILL';
-    callback = callback || function () {};
-    let killTree = true;
-    if(killTree) {
-        psTree(pid, function (err, children) {
-            [pid].concat(
-                children.map(function (p) {
-                    return p.PID;
-                })
-            ).forEach(function (tpid) {
-                try { process.kill(tpid, signal) }
-                catch (ex) { console.log("ERROR1 KILL", ex) }
-            });
-            callback();
-        });
-    } else {
-        try { process.kill(pid, signal) }
-        catch (ex) { console.log("ERROR2 KILL", ex) }
-        callback();
-    }
+// const kill = function (pid, signal, callback) {
+//     signal   = signal || 'SIGKILL';
+//     callback = callback || function () {};
+//     let killTree = true;
+//     if(killTree) {
+//         psTree(pid, function (err, children) {
+//             [pid].concat(
+//                 children.map(function (p) {
+//                     return p.PID;
+//                 })
+//             ).forEach(function (tpid) {
+//                 try { process.kill(tpid, signal) }
+//                 catch (ex) { console.log("ERROR1 KILL", ex) }
+//             });
+//             callback();
+//         });
+//     } else {
+//         try { process.kill(pid, signal) }
+//         catch (ex) { console.log("ERROR2 KILL", ex) }
+//         callback();
+//     }
 
-    console.log("KILLED");
-};
+//     console.log("KILLED");
+// };

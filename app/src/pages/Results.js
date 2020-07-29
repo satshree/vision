@@ -11,9 +11,19 @@ import TableView from '../components/Table';
 import '../assets/css/nav-pills.css';
 import '../assets/css/results.css';
 
+import loading from '../assets/loading2.gif';
+
 const { ipcRenderer } = window.require('electron');
 
 class Results extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            saving:false
+        }
+    }
+
     returnHome = () => {
         if (this.props.imported !== "IMPORTED") {
             swal({
@@ -34,12 +44,13 @@ class Results extends Component {
                 dangerMode: true
             }).then((resp) => {
                 if (resp) {
-                    window.location.href = "/";
+                    window.location.href = "";
                     // this.props.setModeNull();
                 }
             });
         } else {
-            window.location.href = "/";
+            // this.props.setModeNull();
+            window.location.href = "";
         }
     }
 
@@ -97,6 +108,8 @@ class Results extends Component {
     }
 
     saveData = () => {
+        this.setState({saving:true});
+
         let data = JSON.stringify(this.getData().hosts);
 
         ipcRenderer.send('SAVE', data);
@@ -107,12 +120,14 @@ class Results extends Component {
                     text:"Results are saved in a 'vision.csv' file in your desktop.",
                     icon:"success"
                 })
+                .then(() => this.setState({saving:false}));
             } else {
                 swal({
                     title:"Something went wrong.",
                     text:"Please Try Again.",
                     icon:"warning"
                 })
+                .then(() => this.setState({saving:false}));
             }
         });
     }
@@ -145,6 +160,22 @@ class Results extends Component {
         }
     }
 
+    getSaveBtn = () => {
+        if (this.state.saving) {
+            return (
+                <React.Fragment>
+                    <Button variant="success" disabled={ true }><img src={loading} style={{marginRight:'5px', width:'25px'}}></img>Saving ...</Button>
+                </React.Fragment>
+            )
+        } else {
+            return (
+                <React.Fragment>
+                    <Button variant="success" onClick={this.saveData} disabled={ this.disableBtn() }>Save</Button>
+                </React.Fragment>
+            )
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -173,7 +204,7 @@ class Results extends Component {
                         <hr></hr>
                         <div className="btns">
                             <Button variant="info" onClick={this.returnHome} disabled={ this.props.active }>Home</Button>
-                            <Button variant="success" onClick={this.saveData} disabled={ this.disableBtn() }>Save</Button>
+                            { this.getSaveBtn() }
                         </div>
                     </div>
                 </div>
