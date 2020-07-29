@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-root": "electron . --no-sandbox",
-    "electron": "electron ."
+    "electron": "electron .",
+    "electron-package": "electron-packager ."
   },
   "eslintConfig": {
     "extends": "react-app"
