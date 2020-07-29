@@ -1,9 +1,8 @@
 # Vision 2.0
-Scan Your Network for Online Hosts with VISION. <br> Vision will scan your network and list out all the online devices.  
-The front end GUI of Vision is built with 'Electron'. The main backend process is built completely in Python. 
+Scan Your Network for Online Hosts with VISION. <br> Vision will scan your network and list out all the online devices. Vision is built with React.js for UI, Electron.js for desktop platform and Python at the heart of Vision for network scanning. 
 <hr>
-<i>This is the 2nd version of VISION.</i>  <br>
-For the first version, Vision was built on Electron.js and plain HTML, CSS, JavaScript with Python. In this second version, the GUI of Vision is developed using React.js and the Python files have been compiled into Microsoft Windows Executable Binaries. This introduces more stable and fluent GUI with no necessity of installing Python dependencies on user's system.  
+<b>This is the 2nd version of VISION.</b>  <br>
+For the first version, Vision was built on Electron.js and plain HTML, CSS, JavaScript with Python. In this second version, the UI of Vision is developed using React.js and the Python files have been compiled into Microsoft Windows Executable Binaries. This introduces more stable and fluent UI with no necessity of installing Python dependencies on user's system.  
 
 ## Requirements
 The following tools must be installed in order to run Vision.  
