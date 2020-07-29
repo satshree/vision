@@ -1,5 +1,5 @@
 # Vision 2.0
-Scan Your Network for Online Hosts with VISION. Vision will scan your network and list out all the online devices.  
+Scan Your Network for Online Hosts with VISION. <br> Vision will scan your network and list out all the online devices.  
 The front end GUI of Vision is built with 'Electron'. The main backend process is built completely in Python. 
 <hr>
 <i>This is the 2nd version of VISION.</i>  <br>
@@ -8,7 +8,7 @@ For the first version, Vision was built on Electron.js and plain HTML, CSS, Java
 ## Requirements
 The following tools must be installed in order to run Vision.  
 1. Nmap <a href="https://nmap.org/dist/nmap-7.80-setup.exe" download> Download Here </a> 
-2. Microsoft Visual C++ Redistributable 14.0 +  <a href="https://www.microsoft.com/en-us/download/confirmation.aspx?id=48145" download> Download Here </a>
+2. Microsoft Visual C++ Redistributable 14.0 +  <a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank"> Download Here </a>
 
 ## Setup
 <a href="https://drive.google.com/file/d/1kPUdkb31I2jSgwvsYGaZWalAe8mqHv9j/view?usp=sharing" target="_blank">Download installer here.</a>  
@@ -16,12 +16,12 @@ The following tools must be installed in order to run Vision.
 ## Usage
 Vision provides you with two options to scan network,
   
-1. <i>Default Scan</i>: On starting Vision, press on "Let Vision Do The Dirty Work". Your network will be scanned until Vision finds two empty subnets.  
-2. <i>Custom Scan</i>: On starting Vision, press on "Scan Network Yourself". Here, Vision will let you scan a range of IP address or a single IP address.  
+1. <b>Default Scan</b>: On starting Vision, press on "Let Vision Do The Dirty Work". Your network will be scanned until Vision finds two empty subnets.  
+2. <b>Custom Scan</b>: On starting Vision, press on "Scan Network Yourself". Here, Vision will let you scan a range of IP address or a single IP address.  
   
 Once the scanning is done, all the hosts will be listed on graphical view and tabular view. The graph represents total number of devices grouped by their manufacturers. From tabular view, you can perform port scanning or OS fingerprinting on individual hosts. You can also save the scanned hosts as CSV file. Vision will save the file on your Desktop.  
   
-3. <i>Other Options</i>: With this new version, you can probe about any device on the internet as long as you know their public IP or domain name. Along with this, you can also import previously saved results to visualize and list out the devices scanned at that moment. However, you cannot perform any further actions on imported data.  
+3. <b>Other Options</b>: With this new version, you can probe about any device on the internet as long as you know their public IP or domain name. Along with this, you can also import previously saved results to visualize and list out the devices scanned at that moment. However, you cannot perform any further actions on imported data.  
 
 ## Development
 Vision is now built on Electron.js - React.js - Python. The Python dependencies are unchanged while there are several new dependencies for Node.js regarding React.js (obviously).  
