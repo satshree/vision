@@ -36,11 +36,13 @@ Follow following steps to run Vision.
 
 3. Update the 'loadURL' value in 'magic.js' to localhost URL.  
 
-4. Make sure to update the path to backend scripts in 'electron.js'.  
+4. Make sure to update the path to backend scripts  in 'electron.js' if you are using different scripts.  
 
-5. Run 'npm run start' or 'npm start' to start a development server.  
+5. Make sure to check the loadURL value in 'electron.js'.  
 
-6. On the other terminal, run 'npm run electron' to start Vision.
+6. Run 'npm run start' or 'npm start' to start a development server.  
+
+7. On the other terminal, run 'npm run electron' to start Vision.
 
 ## Author
 Satshree Shrestha  
