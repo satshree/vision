@@ -34,11 +34,11 @@ function createWindow() {
 
     // win.loadURL(url.format({
     //     pathname: "localhost:3000",
-    //     protocol: 'file:',
+    //     protocol: 'http',
     //     slashes: false
     // }));
 
-    win.loadFile('build/index.html');
+    win.loadFile('./build/index.html');
     
     win.removeMenu()
 }
@@ -145,7 +145,7 @@ ipcMain.handle('KILL', () => {
 
 // FUNCTIONS
 function runEngine(file, arg1, arg2, channel) {
-    let cmd = `${path.join(__dirname, `engine/${file}`)}`
+    let cmd = `${path.join(__dirname, `../engine/${file}`)}`
 
     if (arg2) {
         bin = spawn(cmd, [arg1, arg2]); 

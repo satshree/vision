@@ -688,8 +688,8 @@ class Others extends Component {
                 <Modal show={ this.state.importing } backdrop="static" keyboard={false} centered>
                     <Modal.Body>
                         <div className="container text-center">
-                            <div className="vertical-center" style={{minHeight:0}}>
-                                <Spinner animation="border" variant="info" style={{marginRight:'5px'}}/> <h5>Importing ...</h5>
+                            <div className="vertical-center" style={{minHeight:0, padding:'50px'}}>
+                                <Spinner animation="border" variant="info" style={{marginRight:'15px', marginLeft:'4rem'}}/> <h3 style={{marginTop:'2px'}}>Importing ...</h3>
                             </div>
                         </div>
                     </Modal.Body>

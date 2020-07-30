@@ -1,11 +1,40 @@
 {
   "name": "vision",
   "author": "Satshree Shrestha",
+  "description": "Scan Your Network for Online Hosts with VISION.",
   "license": "GNU GENERAL PUBLIC LICENSE Version 3",
-  "main": "./magic.js",
-  "version": "0.2.0",
+  "main": "./public/electron.js",
+  "version": "2.0.0",
   "private": true,
   "homepage": "./",
+  "build": {
+    "appId": "electron.react",
+    "productName": "Vision",
+    "files": [
+      "node_modules/",
+      "build/",
+      "engine/",
+      "public/electron.js",
+      "package.json"
+    ],
+    "asar": false,
+    "win": {
+      "icon": "./build/logo.png",
+      "publisherName": "Satshree Shrestha",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "directories": {
+      "buildResources": "resources"
+    }
+  },
   "dependencies": {
     "@popperjs/core": "^2.4.4",
     "@testing-library/jest-dom": "^4.2.4",
@@ -33,6 +62,7 @@
     "eject": "react-scripts eject",
     "electron-root": "electron . --no-sandbox",
     "electron": "electron .",
+    "electron-build": "electron-builder",
     "electron-package": "electron-packager .",
     "electron-package-overwrite": "electron-packager . --overwrite"
   },
@@ -57,7 +87,6 @@
   "devDependencies": {
     "electron": "^9.1.0",
     "electron-builder": "^22.8.0",
-    "electron-packager": "^15.0.0",
-    "electron-wix-msi": "^2.2.0"
+    "electron-packager": "^15.0.0"
   }
 }
