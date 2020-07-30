@@ -10,7 +10,7 @@ The following tools must be installed in order to run Vision.
 2. Microsoft Visual C++ Redistributable 14.0 + (<a href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_blank">Download Here</a>)
 
 ## Setup
-<a href="https://drive.google.com/file/d/1kPUdkb31I2jSgwvsYGaZWalAe8mqHv9j/view?usp=sharing" target="_blank">Download installer here.</a>  
+<a href="https://drive.google.com/file/d/11-lL1bJE0ssUQEBAOY4xk4qxoD5IGrRS/view?usp=sharing" target="_blank">Download installer here.</a>  
 
 ## Usage
 Vision provides you with two options to scan network,
@@ -36,9 +36,11 @@ Follow following steps to run Vision.
 
 3. Update the 'loadURL' value in 'magic.js' to localhost URL.  
 
-4. Run 'npm run start' or 'npm start' to start a development server.  
+4. Make sure to update the path to backend scripts in 'electron.js'.  
 
-5. On the other terminal, run 'npm run electron' to start Vision.
+5. Run 'npm run start' or 'npm start' to start a development server.  
+
+6. On the other terminal, run 'npm run electron' to start Vision.
 
 ## Author
 Satshree Shrestha  
