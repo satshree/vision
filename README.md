@@ -34,15 +34,17 @@ Follow following steps to run Vision.
 2. If dependencies were install from Pipfile, run following command before starting Vision.  
     - pipenv shell  
 
-3. Update the 'loadURL' value in 'magic.js' to localhost URL.  
+3. The main Electron.js config is in 'public' directory. However, electron-builder also requires the js file named 'electron.js' in 'build' directory to compile. 
+ 
+4. Update the 'loadURL' value in 'electron.js' to localhost URL.  
 
-4. Make sure to update the path to backend scripts  in 'electron.js' if you are using different scripts.  
+5. Make sure to update the path to backend scripts  in 'electron.js' if you are using different scripts.  
 
-5. Make sure to check the loadURL value in 'electron.js'.  
+6. Make sure to check the loadURL value in 'electron.js'.  
 
-6. Run 'npm run start' or 'npm start' to start a development server.  
+7. Run 'npm run start' or 'npm start' to start a React development server.  
 
-7. On the other terminal, run 'npm run electron' to start Vision.
+8. On the other terminal, run 'npm run electron' to start Vision.
 
 ## Author
 Satshree Shrestha  
