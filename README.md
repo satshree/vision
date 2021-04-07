@@ -1,8 +1,18 @@
 # Vision 2.0
-Scan Your Network for Online Hosts with VISION. <br> Vision will scan your network and list out all the online devices. Vision is built with React.js for UI, Electron.js for desktop platform and Python at the heart of Vision for network scanning. 
-<hr>
-<b>This is the 2nd version of VISION.</b>  <br>
+<p align="center">
+  Scan Your Network for Online Hosts with VISION. 
+  <br /> 
+  <br /> 
+  Vision will scan your network and list out all the online devices. 
+  <br />
+  Vision is built with React.js for UI, Electron.js for desktop platform and Python at the heart for network scanning.   
+  <hr />
+</p>
+<strong><p align="center">This is the 2nd version of VISION.</p></strong>  
+<br />
+<p align="justify">
 For the first version, Vision was built on Electron.js and plain HTML, CSS, JavaScript with Python. In this second version, the UI of Vision is developed using React.js and the Python files have been compiled into Microsoft Windows Executable Binaries. This introduces more stable and fluent UI with no necessity of installing Python dependencies on user's system.  
+</p>
 
 ## Requirements
 The following tools must be installed in order to run Vision.  
@@ -23,29 +33,19 @@ Once the scanning is done, all the hosts will be listed on graphical view and ta
 3. <b>Other Options</b>: With this new version, you can probe about any device on the internet as long as you know their public IP or domain name. Along with this, you can also import previously saved results to visualize and list out the devices scanned at that moment. However, you cannot perform any further actions on imported data.  
 
 ## Development
-Vision is now built on Electron.js - React.js - Python. The Python dependencies are unchanged while there are several new dependencies for Node.js regarding React.js (obviously).  
+Vision is now built on Electron.js - React.js - Python.   
   
-Follow following steps to run Vision.  
-1. Install dependencies  
-    - npm install  
-    - To install from 'requirements.txt' => pip install -r requirements.txt  
-    - To install from 'Pipfile' => pipenv install  
-  
-2. If dependencies were install from Pipfile, run following command before starting Vision.  
-    - pipenv shell  
+Points to note to run Vision for development.
 
-3. The main Electron.js config is in 'public' directory. However, electron-builder also requires the js file named 'electron.js' in 'build' directory to compile. 
+  - The main Electron.js config is in 'public' directory. However, electron-builder also requires the js file named 'electron.js' in 'build' directory to compile. 
  
-4. Update the 'loadURL' value in 'electron.js' to localhost URL.  
+  - Update the 'loadURL' value in 'electron.js' to localhost URL.  
 
-5. Make sure to update the path to backend scripts  in 'electron.js' if you are using different scripts.  
+  - Make sure to update the path to backend scripts  in 'electron.js' if you are using different scripts.  
 
-6. Make sure to check the loadURL value in 'electron.js'.  
-
-7. Run 'npm run start' or 'npm start' to start a React development server.  
-
-8. On the other terminal, run 'npm run electron' to start Vision.
+  - Make sure to check the loadURL value in 'electron.js'.  
 
 ## Author
 Satshree Shrestha  
-Nepal
+satshree.shrestha@yahoo.com | <a href="https://satshree.com.np">Website</a>  
+🇳🇵Nepal
